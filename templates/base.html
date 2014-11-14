@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MEI Customization Service</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>MEI Customization Service</h1>
+            </header>
+            <form>
+                <section>
+                    <h2>Schema Language</h2>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="schema-option" id="relaxng-option" value="relaxng" checked>
+                            RelaxNG
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="schema-option" id="odd-option" value="compiledodd">
+                            Compiled ODD
+                        </label>
+                    </div>
+                </section>
+                <section>
+                    <h2>MEI Source File</h2>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="source-option" id="mei2013-option" value="schema-2013" checked>
+                            MEI 2013 (v2.1.0)
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="source-option" id="mei2012-option" value="schema-2012">
+                            MEI 2012 (v2.0.0)
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="source-option" id="meilatest-option" value="schema-latest">
+                            Latest from development branch
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="source-option" id="meilocal-option" value="localsource">
+                            Local Canonicalized driver file
+                        </label>
+                    </div>
+                </section>
+                <section>
+                    <h2>MEI Customization</h2>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="custom-option" id="meiall-2013" value="meiall-2013" checked>
+                            MEI All from MEI 2013
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="custom-option" id="meiall-2013" value="meiall-2012">
+                            MEI All from MEI 2012
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="custom-option" id="meiall-develop" value="meiall-develop">
+                            MEI All from development branch
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="custom-option" id="local-customization" value="local-customization">
+                            Local customization file
+                        </label>
+                    </div>
+                </section>
+            </form>
+            </div>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    </body>
+</html>

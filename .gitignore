@@ -1,0 +1,15 @@
+*.pyc
+
+*.iml
+
+*.db
+
+*.db.lock
+
+src/*
+
+/src
+
+mei_env/*
+
+.idea/*
