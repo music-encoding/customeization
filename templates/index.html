@@ -1,18 +1,32 @@
 {% extends "base.html" %}
 
 {% block body %}
-<form action="/process/" method="POST">
+<form action="/" method="POST">
     {{ form.csrf_token }}
+    {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            <strong>Problems with your submission</strong>
+            Please correct the errors below and try again.
+        </div>
+    {% endif %}
     <section>
         <h2>Schema Language</h2>
-            {% for lang in form.schema_language %}
-            <div class="radio">
-                <label for="{{ lang.label.field_id }}">
-                    {{ lang }}
-                    {{ lang.label.text }}
-                </label>
-            </div>
+        {% for lang in form.schema_language %}
+        <div class="radio">
+            <label for="{{ lang.label.field_id }}">
+                {{ lang }}
+                {{ lang.label.text }}
+            </label>
+        </div>
+        {% endfor %}
+
+        {% if form.schema_language.errors %}
+        <div class="alert alert-danger">
+            {% for error in form.schema_language.errors %}
+                <strong>{{ form.schema_language.label.text }}:</strong> {{ error }}
             {% endfor %}
+        </div>
+        {% endif %}
     </section>
     <section>
         <h2>MEI Source File</h2>
@@ -24,6 +38,21 @@
             </label>
         </div>
         {% endfor %}
+        <div class="form-group">
+            <label for="{{ form.source_canonical_file.label.field_id }}">{{ form.source_canonical_file.label.text }}</label>
+            {{ form.source_canonical_file }}
+        </div>
+        {% if form.source_canonical_file.errors %}
+            <div class="alert alert-danger">If you chose the local driver file, you must provide the file.</div>
+        {% endif %}
+
+        {% if form.source_options.errors %}
+            <div class="alert alert-danger">
+                {% for error in form.source_options.errors %}
+                    <strong>{{ form.source_options.label.text }}:</strong> {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
     </section>
     <section>
         <h2>MEI Customization</h2>
@@ -35,8 +64,27 @@
             </label>
         </div>
         {% endfor %}
+        <div class="form-group">
+            <label for="{{ form.local_customization_file.label.field_id }}">{{ form.local_customization_file.label.text }}</label>
+            {{ form.local_customization_file }}
+        </div>
+        {% if form.local_customization_file.errors %}
+            <div class="alert alert-danger">
+                If you chose the local customization option you must provide the file.
+            </div>
+        {% endif %}
+
+        {% if form.customization_options.errors %}
+        <div class="alert alert-danger">
+            {% for error in form.customization_options.errors %}
+                <strong>{{ form.customization_options.label.text }}:</strong> {{ error }}
+            {% endfor %}
+        </div>
+        {% endif %}
     </section>
-    <button class="btn btn-primary">Process</button>
+    <section>
+        <button class="btn btn-primary">Process</button>
+    </section>
 </form>
 <hr />
 {% endblock %}

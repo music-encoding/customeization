@@ -4,6 +4,8 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import jsonify
+from flask import redirect
+from flask import url_for
 from flask import make_response
 
 from flask.ext import shelve
@@ -13,6 +15,7 @@ import conf
 from forms import ProcessForm
 from task import make_celery
 from task import perform_svn_update
+from task import package_files
 
 app = Flask(__name__)
 app.secret_key = conf.SECRET_KEY
@@ -25,9 +28,25 @@ celery = make_celery(app)
 csrf = CsrfProtect()
 csrf.init_app(app)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    form = ProcessForm()
+    form = ProcessForm(request.form)
+
+    # If there are form errors it will not pass form.validate() and
+    # will fall through to the "GET" handler, passing along the errors
+    # to the template.
+    # This means we don't have to check the presence of (most) options
+    if request.method == 'POST' and form.validate():
+        print("Form was submitted")
+        schema_language = request.form.get('schema_language', None)
+        source_option = request.form.get('source_options', None)
+        customization_option = request.form.get('customization_options', None)
+
+        print(schema_language)
+        print(source_option)
+        print(customization_option)
+
+        return redirect(url_for('process_and_download'))
 
     db = shelve.get_shelve('r')
     d = {
@@ -37,9 +56,8 @@ def index():
 
     return render_template("index.html", form=form, **d)
 
-@app.route('/process/', methods=['POST'])
+@app.route('/process/')
 def process_and_download():
-    print(request.form)
     return render_template("process.html")
 
 @app.route('/progress/')
