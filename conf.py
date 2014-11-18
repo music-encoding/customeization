@@ -1,4 +1,27 @@
 
 MEI_SVN_SOURCE_DIR = "/Users/ahankins/Documents/code/git/customeization/src/music-encoding-svn"
 GOOGLE_CODE_AUTHKEY = ""
-GOOGLE_CODE_PUBLIC_SVN = "http://music-encoding.googlecode.com/svn/"
+GOOGLE_CODE_PUBLIC_SVN = "http://music-encoding.googlecode.com/svn/"LATEST_TAG_2013 = "2.1.1"
+
+LATEST_TAG_2013 = "2.1.1"
+LATEST_TAG_2012 = "2.0.0"
+
+PATH_TO_TEI_STYLESHEETS = "/usr/local/share/tei/Stylesheets"
+PATH_TO_SAXON_JAR = "/usr/share/java/Saxon-HE-9.4.0.7.jar"
+PATH_TO_TRANG_JAR = "/usr/share/java/trang.jar"
+PATH_TO_JING = "/usr/bin/jing"
+
+TEI_TO_RELAXNG_BIN = PATH_TO_TEI_STYLESHEETS + "/bin/teitorelaxng"
+TEI_TO_COMPILEDODD_BIN = PATH_TO_TEI_STYLESHEETS + "/bin/teitoodd"
+
+MEI_ALL_FILE = "/customizations/mei-all.xml"
+DRIVER_FILE = "/source/driver.xml"
+
+
+MEI_2013_SOURCE_FILE = MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + DRIVER_FILE
+MEI_2012_SOURCE_FILE = MEI_SVN_SOURCE_DIR + "/tags/MEI2012_v" + LATEST_TAG_2012 + DRIVER_FILE
+MEI_DEV_SOURCE_FILE = MEI_SVN_SOURCE_DIR + "/trunk" + DRIVER_FILE
+
+MEI_ALL_2013_CUSTOMIZATION = MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + MEI_ALL_FILE
+MEI_ALL_2012_CUSTOMIZATION = MEI_SVN_SOURCE_DIR + "/tags/MEI2012_v" + LATEST_TAG_2012 + MEI_ALL_FILE
+MEI_ALL_DEV_CUSTOMIZATION = MEI_SVN_SOURCE_DIR + "/trunk" + MEI_ALL_FILE
