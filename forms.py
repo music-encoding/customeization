@@ -1,3 +1,4 @@
+import conf
 from flask_wtf import Form
 from wtforms import RadioField, FileField
 from wtforms.validators import InputRequired
@@ -21,8 +22,8 @@ class RequiredIf(InputRequired):
 
 
 class ProcessForm(Form):
-    SOURCE_OPTIONS = [('schema-2013', "MEI 2013 (v2.1.0)"),
-                      ('schema-2012', "MEI 2012 (v2.0.0)"),
+    SOURCE_OPTIONS = [('schema-2013', "MEI 2013 (v{0})".format(conf.LATEST_TAG_2013)),
+                      ('schema-2012', "MEI 2012 (v{0})".format(conf.LATEST_TAG_2012)),
                       ('schema-latest', 'Latest from Development Branch'),
                       ('localsource', "Local Canonicalized Driver File")]
 
