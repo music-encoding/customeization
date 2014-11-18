@@ -47,3 +47,7 @@ def perform_svn_update():
     print(files)
 
     return True
+
+@task(ignore_result=True)
+def package_files(output_type, source_file, customization_file):
+    return True
