@@ -12,11 +12,33 @@
             {% block body %}
 
             {% endblock %}
-            <footer>
-                Development Version: r{{ latest_revision }}.
-            </footer>
+            <hr />
+            <h3>MEI Source info</h3>
+            <dl>
+                <dt>
+                    Development Version:
+                </dt>
+                <dd>
+                    r{{ latest_revision }}.
+                </dd>
+                <dt>
+                    Latest stable version (2013):
+                </dt>
+                <dd>
+                    {{ config["LATEST_TAG_2013"] }}
+                </dd>
+                <dt>
+                    Latest legacy version (2012):
+                </dt>
+                <dd>
+                    {{ config["LATEST_TAG_2012"] }}
+                </dd>
+            </dl>
         </div>
         <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+        {% block scripts %}
+
+        {% endblock %}
     </body>
 </html>

@@ -43,7 +43,7 @@
             {{ form.source_canonical_file }}
         </div>
         {% if form.source_canonical_file.errors %}
-            <div class="alert alert-danger">If you chose the local driver file, you must provide the file.</div>
+            <div class="alert alert-danger">If you chose the local driver option, you must provide the file.</div>
         {% endif %}
 
         {% if form.source_options.errors %}
@@ -86,5 +86,4 @@
         <button class="btn btn-primary">Process</button>
     </section>
 </form>
-<hr />
 {% endblock %}
