@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block body %}
+<form action="/process/" method="POST">
+    {{ form.csrf_token }}
+    <section>
+        <h2>Schema Language</h2>
+            {% for lang in form.schema_language %}
+            <div class="radio">
+                <label for="{{ lang.label.field_id }}">
+                    {{ lang }}
+                    {{ lang.label.text }}
+                </label>
+            </div>
+            {% endfor %}
+    </section>
+    <section>
+        <h2>MEI Source File</h2>
+        {% for source in form.source_options %}
+        <div class="radio">
+            <label for="{{ source.label.field_id }}">
+                {{ source }}
+                {{ source.label.text }}
+            </label>
+        </div>
+        {% endfor %}
+    </section>
+    <section>
+        <h2>MEI Customization</h2>
+        {% for custom in form.customization_options %}
+        <div class="radio">
+            <label for="{{ custom.label.field_id }}">
+                {{ custom }}
+                {{ custom.label.text }}
+            </label>
+        </div>
+        {% endfor %}
+    </section>
+    <button class="btn btn-primary">Process</button>
+</form>
+<hr />
+{% endblock %}
