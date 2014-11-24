@@ -1,15 +1,22 @@
+import os
 import hmac
 import operator
+import tempfile
+
 from flask import Flask
 from flask import render_template
 from flask import request
 from flask import jsonify
 from flask import redirect
 from flask import url_for
+from flask import send_file
+from flask import send_from_directory
 from flask import make_response
 
 from flask.ext import shelve
 from flask_wtf import CsrfProtect
+
+from werkzeug.utils import secure_filename
 
 import conf
 from forms import ProcessForm
@@ -42,11 +49,30 @@ def index():
     if request.method == 'POST' and form.validate():
         schema_language = request.form.get('schema_language', None)
         source_option = request.form.get('source_options', None)
+        canonicalized_source = request.files.get('source_canonical_file', None)
         customization_option = request.form.get('customization_options', None)
+        local_customization = request.files.get('local_customization_file', None)
 
-        res = package_files.apply_async(args=[schema_language, source_option, customization_option])
+        uploaded_customization = None
+        # at this point the form will have been checked to make sure the local customization
+        # file is present if the local customization option is selected,
+        # but we'll do another sanity check here just to make sure.
+        if customization_option == 'local-customization' and local_customization is not None:
+            tmpdir = tempfile.mkdtemp()
+            filename = secure_filename(local_customization.filename)
+            uploaded_customization = os.path.join(tmpdir, filename)
+            local_customization.save(uploaded_customization)
 
-        print(res)
+        uploaded_source = None
+        if source_option == 'local-source' and canonicalized_source is not None:
+            tmpdir = tempfile.mkdtemp()
+            filename = secure_filename(canonicalized_source.filename)
+            uploaded_source = os.path.join(tmpdir, filename)
+            canonicalized_source.save(uploaded_source)
+
+        res = package_files.apply_async(args=[schema_language, source_option, customization_option],
+                                        kwargs={"uploaded_customization": uploaded_customization,
+                                                "uploaded_source": uploaded_source})
 
         return redirect(url_for('process_and_download') + "?cid=" + str(res))
 
@@ -62,8 +88,11 @@ def index():
 def process_and_download():
     celery_job_id = request.args.get('cid', None)
 
+    db = shelve.get_shelve('r')
     d = {
-        'celery_job_id': celery_job_id
+        'celery_job_id': celery_job_id,
+        'latest_revision': db['mei_latest_svn_revision'],
+        'latest_revision_timestamp': db['mei_latest_svn_timestamp']
     }
 
     return render_template("process.html", **d)
@@ -76,19 +105,25 @@ def progress():
     if task.status == 'PROGRESS':
         d = {
             'status': task.status,
-            'percentage': task.info['process_percent'],
+            'percentage': 50,
             'download': None,
             'message': None
         }
         return jsonify(d)
     elif task.status == 'SUCCESS':
+        result = os.path.relpath(task.result['file'], app.root_path)
+
         d = {
             'status': task.status,
             'percentage': 100,
-            'download': "http://foo.com",
+            'download': "/" + result,
             'message': None
         }
+        # filename = os.path.basename(result['file'])
+        # response = send_file(result['file'])
+        # response.headers['Content-Disposition'] = 'filename=' + filename
         return jsonify(d)
+
     elif task.status == 'FAILURE':
         d = {
             'status': task.status,
@@ -106,6 +141,9 @@ def progress():
         }
         return jsonify(d)
 
+@app.route('/build/<path:filename>', methods=['GET'])
+def build(filename):
+    return send_from_directory(conf.BUILT_SCHEMA_DIR, filename, as_attachment=True)
 
 @app.route('/google-code/', methods=['POST',])
 def googlecode():
