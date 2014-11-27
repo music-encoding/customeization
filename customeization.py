@@ -31,6 +31,7 @@ app.config['CELERY_BACKEND'] = 'amqp'
 app.config['CELERY_BROKER_URL'] = 'amqp://guest:guest@localhost:5672/'
 app.config['LATEST_TAG_2013'] = conf.LATEST_TAG_2013
 app.config['LATEST_TAG_2012'] = conf.LATEST_TAG_2012
+app.debug = True
 
 shelve.init_app(app)
 celery = make_celery(app)
@@ -192,5 +193,4 @@ def googlecode():
     return make_response(json_resp, 200)
 
 if __name__ == '__main__':
-    app.debug = True
     app.run()
