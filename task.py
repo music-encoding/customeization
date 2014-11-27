@@ -94,8 +94,6 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
 
     # this will name the output file after the customization file, but with the a new extension.
     output_filename = "{0}{1}".format(os.path.splitext(os.path.basename(customization))[0], output_ext)
-    print(tmpdir)
-    print(output_filename)
 
     tmp_output_path = os.path.join(tmpdir, output_filename)
 
@@ -127,12 +125,10 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
 
     # clean up any other files the user may have uploaded
     if uploaded_source is not None:
-        os.remove(uploaded_source)
-        # shutil.rmtree(uploaded_source)
+        shutil.rmtree(os.path.dirname(uploaded_source))
 
     if uploaded_customization is not None:
-        os.remove(uploaded_customization)
-        # shutil.rmtree(uploaded_customization)
+        shutil.rmtree(os.path.dirname(uploaded_customization))
 
     full_path = os.path.join(full_download_path, output_filename)
 
