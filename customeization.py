@@ -77,9 +77,17 @@ def index():
         return redirect(url_for('process_and_download') + "?cid=" + str(res))
 
     db = shelve.get_shelve('r')
+    latest_svn_revision = None
+    latest_svn_timestamp = None
+    if db.has_key('mei_latest_svn_revision'):
+        latest_svn_revision = db['mei_latest_svn_revision']
+
+    if db.has_key('mei_latest_svn_timestamp'):
+        latest_svn_timestamp = db['mei_latest_svn_timestamp']
+
     d = {
-        'latest_revision': db['mei_latest_svn_revision'],
-        'latest_revision_timestamp': db['mei_latest_svn_timestamp']
+        'latest_revision': latest_svn_revision,
+        'latest_revision_timestamp': latest_svn_timestamp
     }
 
     return render_template("index.html", form=form, **d)
@@ -89,10 +97,18 @@ def process_and_download():
     celery_job_id = request.args.get('cid', None)
 
     db = shelve.get_shelve('r')
+    latest_svn_revision = None
+    latest_svn_timestamp = None
+    if db.has_key('mei_latest_svn_revision'):
+        latest_svn_revision = db['mei_latest_svn_revision']
+
+    if db.has_key('mei_latest_svn_timestamp'):
+        latest_svn_timestamp = db['mei_latest_svn_timestamp']
+
     d = {
         'celery_job_id': celery_job_id,
-        'latest_revision': db['mei_latest_svn_revision'],
-        'latest_revision_timestamp': db['mei_latest_svn_timestamp']
+        'latest_revision': latest_svn_revision,
+        'latest_revision_timestamp': latest_svn_timestamp
     }
 
     return render_template("process.html", **d)
