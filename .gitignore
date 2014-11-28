@@ -13,3 +13,5 @@ src/*
 mei_env/*
 
 .idea/*
+
+/conf.py
