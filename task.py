@@ -111,7 +111,6 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
     import uuid
     import shutil
     import os
-    import sys
 
     tmpdir = tempfile.mkdtemp()
     current_task.update_state(state='PROGRESS', meta={'process_percent': 50, 'file': None, 'message': None})
@@ -150,15 +149,15 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
 
     tmp_output_path = os.path.join(tmpdir, output_filename)
     cmd = [transform_bin, "--localsource={0}".format(local_source), "{0}".format(customization), tmp_output_path]
-    proc = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
-    while True:
-        out = proc.stdout.read()
-        if out == '' and proc.poll() is not None:
-            break
-        if out != '':
-            sys.stdout.write(out)
-            sys.stdout.flush()
+    output = None
+    try:
+        output = subprocess.check_output(cmd)
+        print(output)
+    except subprocess.CalledProcessError, e:
+        print("Processing {0} failed. ".format(tmp_output_path))
+        print("Command: {0}".format(cmd))
+        return False
 
     # downloads will be stored in a UUID directory name to avoid filename clashes.
     tmp_download_dir = str(uuid.uuid4())
