@@ -50,11 +50,11 @@
         {
             settings.progressObject.parent().fadeOut(500, function()
             {
-                var errorHeader = $("<div class=\"alert alert-danger\" role=\"alert\"><strong>Error<strong>");
-                var errorMsg = $("The customization process failed with error " + error + ". Please report this error and " +
-                    "this message at <a href=\"https://github.com/music-encoding/customeization/issues\">https://github.com/music-encoding/customeization</a>." +
-                    "(status: " + status + ")</div>");
-                settings.parentSelector.append(errorHeader);
+                var errorstr = "The customization process failed with an error " + error + ". " +
+                    "Please report this error and this message at " +
+                    '<a href="https://github.com/music-encoding/customeization/issues">https://github.com/music-encoding/customeization</a>. ' +
+                    "(status: " + status + ")";
+                var errorMsg = $("<div class=\"alert alert-danger\" role=\"alert\"><strong>Error</strong> " + errorstr + "</div>");
                 settings.parentSelector.append(errorMsg);
             });
         };
@@ -75,15 +75,16 @@
             })
             .done(function (data, status, xhr)
             {
-                if (data.status === "SUCCESS")
+                switch(data.status)
                 {
-                    clearInterval(settings.refreshTimer);
-                    updateProgressBar(data.percentage);
-                    taskIsDone(data);
-                }
-                else
-                {
-                    updateProgressBar(data.percentage);
+                    case("SUCCESS"):
+                        clearInterval(settings.refreshTimer);
+                        updateProgressBar(data.percentage);
+                        taskIsDone(data);
+                        break;
+                    default:
+                        updateProgressBar(data.percentage);
+                        break;
                 }
             })
             .fail(function (xhr, status, error)
