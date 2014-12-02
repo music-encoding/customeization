@@ -49,6 +49,9 @@ celery = make_celery(app)
 csrf = CsrfProtect()
 csrf.init_app(app)
 
+# Check to make sure the app is reporting the latest SVN version
+parse_svn_info.apply_async()
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = ProcessForm(request.form)
