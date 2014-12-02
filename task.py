@@ -64,6 +64,46 @@ def cleanup_build_directory():
             print("Removing: {0}".format(d))
             shutil.rmtree(os.path.join(conf.BUILT_SCHEMA_DIR, d))
 
+# Parses the result of `svn info` and updates the svninfo.json
+# file with the result so that it can be displayed on the pages.
+@task(ignore_result=True)
+def parse_svn_info():
+    import json
+    os.chdir(conf.MEI_SVN_SOURCE_DIR)
+
+    output = None
+    try:
+        output = subprocess.check_output(['svn', 'info'])
+    except subprocess.CalledProcessError, e:
+        output = subprocess.check_output(['svn', 'cleanup'])
+        output = subprocess.check_output(['svn', 'info'])
+    print("Done svn info lookup")
+
+    if output:
+        rev_patt = re.compile(r"Revision: (?P<rev>[0-9]+)")
+        tstamp_patt = re.compile(r"Last Changed Date: .* \((?P<lcdate>.*)\)")
+        revision = ""
+        tstamp = ""
+
+        rev_match = re.search(rev_patt, output)
+        if rev_match:
+            revision = rev_match.group('rev')
+
+        tstamp_match = re.search(tstamp_patt, output)
+        if tstamp_match:
+            tstamp = tstamp_match.group('lcdate')
+
+        # write a simple json file to the current directory. The Flask
+        # webapp will check this.
+        js = dict()
+        js['mei_latest_svn_revision'] = revision
+        js['mei_latest_svn_timestamp'] = tstamp
+
+        dirn = os.path.dirname(os.path.realpath(__file__))
+        with open(os.path.join(dirn, "svninfo.json"), "w") as outfile:
+            json.dump(js, outfile)
+
+    return True
 
 @task(track_started=True)
 def package_files(output_type, source_file, customization_file, uploaded_source=None, uploaded_customization=None):
