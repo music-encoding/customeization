@@ -50,10 +50,10 @@
         {
             settings.progressObject.parent().fadeOut(500, function()
             {
-                var errorHeader = $("<div class=\"well\"><h4 style=\"text-align:center\">Error</h4>");
-                var errorMsg = $("<p>The customization process failed with error " + error + ". Please report this error and " +
+                var errorHeader = $("<div class=\"alert alert-danger\" role=\"alert\"><strong>Error<strong>");
+                var errorMsg = $("The customization process failed with error " + error + ". Please report this error and " +
                     "this message at <a href=\"https://github.com/music-encoding/customeization/issues\">https://github.com/music-encoding/customeization</a>." +
-                    "(status: " + status + ")</p>");
+                    "(status: " + status + ")</div>");
                 settings.parentSelector.append(errorHeader);
                 settings.parentSelector.append(errorMsg);
             });
