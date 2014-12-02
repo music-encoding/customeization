@@ -15,3 +15,11 @@ mei_env/*
 .idea/*
 
 /conf.py
+
+/svninfo.json
+
+.DS_Store
+
+/celerybeat-schedule
+
+/celerybeat.pid
