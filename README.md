@@ -79,6 +79,13 @@ To start the Celery server, open a new terminal window and activate the virtual 
 
 `(customeization_env)$> celery -A customeization.celery worker`
 
+To start the Celery beat system for running periodic tasks:
+
+`(customeization_env)$> celery -A customeization.celery beat`
+
+**NB** The `start.sh`, `celery_start.sh` and `celerybeat_start.sh` shell scripts will take care of starting these for you,
+ensuring the virtual environment is active before starting them.
+
 ## Ready to go
 
 Once everything is up and running you should be able to visit `http://localhost:5000` in your web browser and start generating
@@ -130,6 +137,14 @@ redirect_stderr=true
 [program:customeization-celery]
 command=/var/webapps/customeization/celery_start.sh
 directory=/var/webapps/customeization
+user=www
+autostart=true
+autorestart=true
+redirect_stderr=true
+
+[program:customeization-celerybeat]
+command=/srv/webapps/customeization/celerybeat_start.sh
+directory=/srv/webapps/customeization
 user=www
 autostart=true
 autorestart=true
