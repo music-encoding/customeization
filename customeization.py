@@ -29,6 +29,16 @@ app.secret_key = conf.SECRET_KEY
 app.config['SHELVE_FILENAME'] = 'customeization.db'
 app.config['CELERY_BACKEND'] = 'amqp'
 app.config['CELERY_BROKER_URL'] = 'amqp://guest:guest@localhost:5672/'
+
+# Configure the periodic task scheduler.
+#  1. 'clean-up-build-directory': Will run once a day to clean up directories in the
+#     build directory that are older than a specified time (set in the configuration file, BUILD_EXPIRY)
+app.config['CELERYBEAT_SCHEDULE'] = {
+    'clean-up-build-directory': {
+        'task': 'task.cleanup_build_directory',
+        'schedule': timedelta(hours=24)
+    }
+}
 app.config['LATEST_TAG_2013'] = conf.LATEST_TAG_2013
 app.config['LATEST_TAG_2012'] = conf.LATEST_TAG_2012
 app.debug = True
