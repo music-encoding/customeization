@@ -38,3 +38,6 @@ MEI_ALL_DEV_CUSTOMIZATION = MEI_SVN_SOURCE_DIR + "/trunk" + MEI_ALL_FILE
 # Customize only if you are running the 'official' customization service.
 GOOGLE_CODE_AUTHKEY = ""
 GOOGLE_CODE_PUBLIC_SVN = "http://music-encoding.googlecode.com/svn/"
+
+# Period (in hours) to clean up the build directory
+BUILD_EXPIRY = 24
