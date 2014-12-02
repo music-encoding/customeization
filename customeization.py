@@ -1,6 +1,7 @@
 import os
 import hmac
-import operator
+import json
+from datetime import timedelta
 import tempfile
 
 from flask import Flask
@@ -9,13 +10,10 @@ from flask import request
 from flask import jsonify
 from flask import redirect
 from flask import url_for
-from flask import send_file
 from flask import send_from_directory
 from flask import make_response
 
-from flask.ext import shelve
 from flask_wtf import CsrfProtect
-
 from werkzeug.utils import secure_filename
 
 import conf
@@ -23,10 +21,11 @@ from forms import ProcessForm
 from task import make_celery
 from task import perform_svn_update
 from task import package_files
+from task import parse_svn_info
 
 app = Flask(__name__)
 app.secret_key = conf.SECRET_KEY
-app.config['SHELVE_FILENAME'] = 'customeization.db'
+
 app.config['CELERY_BACKEND'] = 'amqp'
 app.config['CELERY_BROKER_URL'] = 'amqp://guest:guest@localhost:5672/'
 
@@ -43,9 +42,7 @@ app.config['LATEST_TAG_2013'] = conf.LATEST_TAG_2013
 app.config['LATEST_TAG_2012'] = conf.LATEST_TAG_2012
 app.debug = True
 
-shelve.init_app(app)
 celery = make_celery(app)
-
 csrf = CsrfProtect()
 csrf.init_app(app)
 
@@ -90,14 +87,12 @@ def index():
 
         return redirect(url_for('process_and_download') + "?cid=" + str(res))
 
-    db = shelve.get_shelve('r')
     latest_svn_revision = None
     latest_svn_timestamp = None
-    if db.has_key('mei_latest_svn_revision'):
-        latest_svn_revision = db['mei_latest_svn_revision']
-
-    if db.has_key('mei_latest_svn_timestamp'):
-        latest_svn_timestamp = db['mei_latest_svn_timestamp']
+    with open(os.path.join(app.root_path, 'svninfo.json'), 'r') as svninfo:
+        js = json.load(svninfo)
+        latest_svn_revision = js.get('mei_latest_svn_revision', None)
+        latest_svn_timestamp = js.get('mei_latest_svn_timestamp', None)
 
     d = {
         'latest_revision': latest_svn_revision,
@@ -110,14 +105,12 @@ def index():
 def process_and_download():
     celery_job_id = request.args.get('cid', None)
 
-    db = shelve.get_shelve('r')
     latest_svn_revision = None
     latest_svn_timestamp = None
-    if db.has_key('mei_latest_svn_revision'):
-        latest_svn_revision = db['mei_latest_svn_revision']
-
-    if db.has_key('mei_latest_svn_timestamp'):
-        latest_svn_timestamp = db['mei_latest_svn_timestamp']
+    with open(os.path.join(app.root_path, 'svninfo.json'), 'r') as svninfo:
+        js = json.load(svninfo)
+        latest_svn_revision = js.get('mei_latest_svn_revision', None)
+        latest_svn_timestamp = js.get('mei_latest_svn_timestamp', None)
 
     d = {
         'celery_job_id': celery_job_id,
@@ -149,9 +142,6 @@ def progress():
             'download': "/" + result,
             'message': None
         }
-        # filename = os.path.basename(result['file'])
-        # response = send_file(result['file'])
-        # response.headers['Content-Disposition'] = 'filename=' + filename
         return jsonify(d)
 
     elif task.status == 'FAILURE':
@@ -189,18 +179,8 @@ def googlecode():
         json_resp = jsonify(message="Message Secret was not correct")
         return make_response(json_resp, 400)
 
-    # the revisions may come in a block, but we're only interested in the latest revision.
-    revisions = request_body.get('revisions')
-    revisions.sort(key=operator.itemgetter('revision'))
-
+    # fire this off to Celery to pull in the latest results
     perform_svn_update.apply_async()
-
-    db = shelve.get_shelve('c')
-    db['mei_latest_svn_revision'] = revisions[0]['revision']
-    db['mei_latest_svn_author'] = revisions[0]['author']
-    db['mei_latest_svn_timestamp'] = revisions[0]['timestamp']
-    db['mei_latest_svn_url'] = revisions[0]['url']
-    # flask-shelve takes care of closing the DB
 
     json_resp = jsonify(message="Success.")
     return make_response(json_resp, 200)
