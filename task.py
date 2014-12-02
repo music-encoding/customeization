@@ -1,9 +1,6 @@
 import os
 import re
-import datetime
 import subprocess
-import tempfile
-
 import conf
 
 from celery import Celery, current_task
@@ -119,10 +116,6 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
     tmpdir = tempfile.mkdtemp()
     current_task.update_state(state='PROGRESS', meta={'process_percent': 50, 'file': None, 'message': None})
 
-    print(uploaded_customization)
-    print(uploaded_source)
-
-
     transform_bin = None
     output_ext = None
     if output_type == "compiledodd":
@@ -156,14 +149,10 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
     output_filename = "{0}{1}".format(os.path.splitext(os.path.basename(customization))[0], output_ext)
 
     tmp_output_path = os.path.join(tmpdir, output_filename)
-
     cmd = [transform_bin, "--localsource={0}".format(local_source), "{0}".format(customization), tmp_output_path]
-
     proc = subprocess.Popen(cmd, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
-    n = 50
     while True:
-        n += 1
         out = proc.stdout.read()
         if out == '' and proc.poll() is not None:
             break
