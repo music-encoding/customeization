@@ -6,6 +6,9 @@
 {
     var JobProgress = function (element, options)
     {
+        /*
+            These defaults are configurable at instantiation-time.
+         */
         var defaults = {
             celeryJobId: null,
             interval: 1000,         // interval between progress calls in ms.
@@ -14,6 +17,9 @@
 
         var settings = $.extend({}, defaults, options);
 
+        /*
+            These values shouldn't be touched.
+         */
         var globals = {
             refreshTimer: null
         };
@@ -25,6 +31,9 @@
             settings.progressObject.css('width', percentage + '%');
         };
 
+        /*
+            When the Celery task is done, update the progress bar area with a download link.
+         */
         var taskIsDone = function (data)
         {
             settings.progressObject.parent().fadeOut(500);
@@ -32,15 +41,25 @@
             settings.parentSelector.append(download);
         };
 
-        var taskHasFailed = function (data)
+        /*
+            If the task failed, display a helpful message.
+         */
+        var taskHasFailed = function(status, error)
         {
-
+            settings.progressObject.parent().fadeOut(500);
+            var errorHeader = $("<div class=\"well\"><h4 style=\"text-align:center\">Error</h4>");
+            var errorMsg = $("<p>The customization process failed with error " + error + ". Please report this error and " +
+                "this message at <a href=\"https://github.com/music-encoding/customeization/issues\">https://github.com/music-encoding/customeization</a>." +
+                "(status: " + status + ")</p>");
+            settings.parentSelector.append(errorHeader);
+            settings.parentSelector.append(errorMsg);
         };
 
+        /*
+            Periodically check the status of the job.
+         */
         var progressQuery = function ()
         {
-            console.log('progress query called');
-
             $.ajax({
                 url: '/progress/',
                 data: {
@@ -49,20 +68,14 @@
             })
             .always(function ()
             {
-                console.log('request completed');
             })
             .done(function (data, status, xhr)
             {
-                console.log('success');
-
-                console.log(data.status);
-
                 if (data.status === "SUCCESS")
                 {
                     clearInterval(settings.refreshTimer);
                     updateProgressBar(data.percentage);
                     taskIsDone(data);
-                    console.log(data)
                 }
                 else
                 {
@@ -71,15 +84,17 @@
             })
             .fail(function (xhr, status, error)
             {
-                console.error('fail');
-                console.log(xhr);
+                taskHasFailed(status, error);
                 clearInterval(settings.refreshTimer);
             });
         };
 
+        /*
+            When this class is initialized, kick off a timer that
+            periodically checks the progress of the job.
+         */
         var init = function ()
         {
-            console.log('Initializing with celery job id ' + settings.celeryJobId);
             settings.progressObject.css('width', '0%');
             settings.refreshTimer = setInterval(progressQuery, settings.interval);
         };
