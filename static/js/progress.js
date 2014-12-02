@@ -36,9 +36,11 @@
          */
         var taskIsDone = function (data)
         {
-            settings.progressObject.parent().fadeOut(500);
-            var download = $("<div class=\"well\"><h4 style=\"text-align:center\"><a href=\"" + data.download + "\">Download Result</a></h4></div>")
-            settings.parentSelector.append(download);
+            settings.progressObject.parent().fadeOut(500, function()
+            {
+                var download = $("<div class=\"well\"><h4 style=\"text-align:center\"><a href=\"" + data.download + "\">Download Result</a></h4></div>")
+                settings.parentSelector.append(download);
+            });
         };
 
         /*
@@ -46,13 +48,15 @@
          */
         var taskHasFailed = function(status, error)
         {
-            settings.progressObject.parent().fadeOut(500);
-            var errorHeader = $("<div class=\"well\"><h4 style=\"text-align:center\">Error</h4>");
-            var errorMsg = $("<p>The customization process failed with error " + error + ". Please report this error and " +
-                "this message at <a href=\"https://github.com/music-encoding/customeization/issues\">https://github.com/music-encoding/customeization</a>." +
-                "(status: " + status + ")</p>");
-            settings.parentSelector.append(errorHeader);
-            settings.parentSelector.append(errorMsg);
+            settings.progressObject.parent().fadeOut(500, function()
+            {
+                var errorHeader = $("<div class=\"well\"><h4 style=\"text-align:center\">Error</h4>");
+                var errorMsg = $("<p>The customization process failed with error " + error + ". Please report this error and " +
+                    "this message at <a href=\"https://github.com/music-encoding/customeization/issues\">https://github.com/music-encoding/customeization</a>." +
+                    "(status: " + status + ")</p>");
+                settings.parentSelector.append(errorHeader);
+                settings.parentSelector.append(errorMsg);
+            });
         };
 
         /*
