@@ -105,6 +105,10 @@ def index():
 def process_and_download():
     celery_job_id = request.args.get('cid', None)
 
+    # if this is called without a cid, throw the user to the index page.
+    if celery_job_id is None:
+        return redirect(url_for('index'))
+
     latest_svn_revision = None
     latest_svn_timestamp = None
     with open(os.path.join(app.root_path, 'svninfo.json'), 'r') as svninfo:
@@ -123,6 +127,11 @@ def process_and_download():
 @app.route('/progress/')
 def progress():
     celery_job_id = request.args.get('cid', None)
+
+    # if this is called without a cid, throw the user to the index page.
+    if celery_job_id is None:
+        return redirect(url_for('index'))
+
     task = celery.AsyncResult(celery_job_id)
 
     if task.status == 'PROGRESS':
