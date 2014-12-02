@@ -46,6 +46,24 @@ def perform_svn_update():
     # files = os.listdir(os.path.join(os.getcwd(), 'build'))
     return True
 
+# Cleans up the `build` directory after a set period of time. This
+# is registered as an automatic celery task (not called explicitly).
+@task(ignore_result=True)
+def cleanup_build_directory():
+    import datetime
+    import shutil
+
+    print("Checking build directory for cleanup")
+
+    tnow = datetime.datetime.now()
+    for d in os.listdir(conf.BUILT_SCHEMA_DIR):
+        ctime = os.path.getctime(os.path.join(conf.BUILT_SCHEMA_DIR, d))
+        ctime_tstamp = datetime.datetime.fromtimestamp(ctime)
+        delta = tnow - ctime_tstamp
+        if delta > datetime.timedelta(hours=conf.BUILD_EXPIRY):
+            print("Removing: {0}".format(d))
+            shutil.rmtree(os.path.join(conf.BUILT_SCHEMA_DIR, d))
+
 
 @task(track_started=True)
 def package_files(output_type, source_file, customization_file, uploaded_source=None, uploaded_customization=None):
