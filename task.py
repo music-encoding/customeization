@@ -43,7 +43,9 @@ def perform_svn_update():
     os.chdir(os.path.join(conf.MEI_SVN_SOURCE_DIR, "trunk"))
     output = subprocess.check_output(['./build.sh', 'all'])
 
-    # files = os.listdir(os.path.join(os.getcwd(), 'build'))
+    # update the SVN info JSON file
+    parse_svn_info.apply_async()
+
     return True
 
 # Cleans up the `build` directory after a set period of time. This
