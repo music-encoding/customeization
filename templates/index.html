@@ -11,14 +11,7 @@
     {% endif %}
     <section>
         <h2>Schema Language</h2>
-        {% for lang in form.schema_language %}
-        <div class="radio">
-            <label for="{{ lang.label.field_id }}">
-                {{ lang }}
-                {{ lang.label.text }}
-            </label>
-        </div>
-        {% endfor %}
+        {{ form.schema_language }}
 
         {% if form.schema_language.errors %}
         <div class="alert alert-danger">
@@ -30,15 +23,10 @@
     </section>
     <section>
         <h2>MEI Source File</h2>
-        {% for source in form.source_options %}
-        <div class="radio">
-            <label for="{{ source.label.field_id }}">
-                {{ source }}
-                {{ source.label.text }}
-            </label>
-        </div>
-        {% endfor %}
         <div class="form-group">
+            {{ form.source_options }}
+        </div>
+        <div class="form-group" id="local-source-select">
             <label for="{{ form.source_canonical_file.label.field_id }}">{{ form.source_canonical_file.label.text }}</label>
             {{ form.source_canonical_file }}
         </div>
@@ -56,18 +44,15 @@
     </section>
     <section>
         <h2>MEI Customization</h2>
-        {% for custom in form.customization_options %}
-        <div class="radio">
-            <label for="{{ custom.label.field_id }}">
-                {{ custom }}
-                {{ custom.label.text }}
-            </label>
-        </div>
-        {% endfor %}
         <div class="form-group">
+            <p>Select a customization from the dropdown list:</p>
+            {{ form.customization_options }}
+        </div>
+        <div class="form-group" id="local-customization-select">
             <label for="{{ form.local_customization_file.label.field_id }}">{{ form.local_customization_file.label.text }}</label>
             {{ form.local_customization_file }}
         </div>
+
         {% if form.local_customization_file.errors %}
             <div class="alert alert-danger">
                 If you chose the local customization option you must provide the file.
@@ -86,6 +71,8 @@
         <button class="btn btn-primary">Process</button>
     </section>
 </form>
+{% endblock %}
+
 {% block scripts %}
     <script type="text/javascript">
     $(document).ready(function ()
