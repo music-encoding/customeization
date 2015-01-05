@@ -31,9 +31,21 @@ MEI_2013_SOURCE_FILE = MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 
 MEI_2012_SOURCE_FILE = MEI_SVN_SOURCE_DIR + "/tags/MEI2012_v" + LATEST_TAG_2012 + DRIVER_FILE
 MEI_DEV_SOURCE_FILE = MEI_SVN_SOURCE_DIR + "/trunk" + DRIVER_FILE
 
-MEI_ALL_2013_CUSTOMIZATION = MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + MEI_ALL_FILE
-MEI_ALL_2012_CUSTOMIZATION = MEI_SVN_SOURCE_DIR + "/tags/MEI2012_v" + LATEST_TAG_2012 + MEI_ALL_FILE
-MEI_ALL_DEV_CUSTOMIZATION = MEI_SVN_SOURCE_DIR + "/trunk" + MEI_ALL_FILE
+## Customizations
+## The Dictionary key is a unique identifier
+## The tuple is ("Human Readable Name", /path/to/customization/source/file.xml)
+AVAILABLE_CUSTOMIZATIONS = {
+    'mei-all-2013': ("MEI All from MEI 2013", MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + MEI_ALL_FILE),
+    'mei-all-2012': ("MEI All from MEI 2012", MEI_SVN_SOURCE_DIR + "/tags/MEI2012_v" + LATEST_TAG_2012 + MEI_ALL_FILE),
+    'mei-all-develop': ("MEI All from Development Branch", MEI_SVN_SOURCE_DIR + "/trunk" + MEI_ALL_FILE),
+    "mei-neumes-2013": ("MEI Neumes from MEI 2013", MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + MEI_NEUMES_FILE),
+    "mei-neumes-develop": ("MEI Neumes from Development Branch", MEI_SVN_SOURCE_DIR + "/trunk" + MEI_NEUMES_FILE),
+    "mei-mensural-2013": ("MEI Mensural from MEI 2013", MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + MEI_MENSURAL_FILE),
+    "mei-mensural-develop": ("MEI Mensural from Development Branch", MEI_SVN_SOURCE_DIR + "/trunk" + MEI_MENSURAL_FILE),
+    "mei-cmn-2013": ("MEI CMN From MEI 2013", MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + MEI_CMN_FILE),
+    "mei-cmn-develop": ("MEI CMN From Development Branch", MEI_SVN_SOURCE_DIR + "/trunk" + MEI_CMN_FILE),
+    "z-local-customization": ("Local Customization File", None)  # This should always sort last.
+}
 
 # Customize only if you are running the 'official' customization service.
 GOOGLE_CODE_AUTHKEY = ""

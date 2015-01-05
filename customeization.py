@@ -49,6 +49,7 @@ csrf.init_app(app)
 # Check to make sure the app is reporting the latest SVN version
 parse_svn_info.apply_async()
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = ProcessForm(request.form)
@@ -68,7 +69,7 @@ def index():
         # at this point the form will have been checked to make sure the local customization
         # file is present if the local customization option is selected,
         # but we'll do another sanity check here just to make sure.
-        if customization_option == 'local-customization' and local_customization is not None:
+        if customization_option == 'z-local-customization' and local_customization is not None:
             tmpdir = tempfile.mkdtemp()
             filename = secure_filename(local_customization.filename)
             uploaded_customization = os.path.join(tmpdir, filename)

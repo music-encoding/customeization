@@ -135,14 +135,11 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
         local_source = uploaded_source
 
     customization = None
-    if customization_file == "meiall-2013":
-        customization = conf.MEI_ALL_2013_CUSTOMIZATION
-    elif customization_file == "meiall-2012":
-        customization = conf.MEI_ALL_2012_CUSTOMIZATION
-    elif customization_file == "meiall-develop":
-        customization = conf.MEI_ALL_DEV_CUSTOMIZATION
-    elif customization_file == 'local-customization':
+    if uploaded_customization and customization_file == "z-local-customization":
         customization = uploaded_customization
+    else:
+        ## This is the path to the customization file in the source checkout
+        customization = conf.AVAILABLE_CUSTOMIZATIONS[customization_file][1]
 
     # this will name the output file after the customization file, but with the a new extension.
     output_filename = "{0}{1}".format(os.path.splitext(os.path.basename(customization))[0], output_ext)
