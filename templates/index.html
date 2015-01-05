@@ -86,4 +86,30 @@
         <button class="btn btn-primary">Process</button>
     </section>
 </form>
+{% block scripts %}
+    <script type="text/javascript">
+    $(document).ready(function ()
+    {
+        $("#local-customization-select").hide();
+        $("#local-source-select").hide();
+
+        $("#source_options").change( function ()
+        {
+            if (this.value === "local-source")
+            {
+                $("#local-source-select").slideDown();
+
+            }
+        });
+
+        $("#customization_options").change( function ()
+        {
+            if (this.value === "z-local-customization")
+            {
+                $("#local-customization-select").slideDown();
+
+            }
+        });
+    });
+    </script>
 {% endblock %}
