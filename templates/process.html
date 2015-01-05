@@ -16,8 +16,6 @@
     <script type="text/javascript">
         $(document).ready(function ()
         {
-            console.log("Hello world!");
-
             $('#task-status').job_progress({
                 celeryJobId: "{{ celery_job_id }}",
                 progressObject: $("#job-progress")
