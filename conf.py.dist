@@ -25,6 +25,9 @@ TEI_TO_RELAXNG_BIN = PATH_TO_TEI_STYLESHEETS + "/bin/teitorelaxng"
 TEI_TO_COMPILEDODD_BIN = PATH_TO_TEI_STYLESHEETS + "/bin/teitoodd"
 
 MEI_ALL_FILE = "/customizations/mei-all.xml"
+MEI_NEUMES_FILE = "/customizations/mei-Neumes.xml"
+MEI_MENSURAL_FILE = "/customizations/mei-Mensural.xml"
+MEI_CMN_FILE = "/customizations/mei-CMN.xml"
 DRIVER_FILE = "/source/driver.xml"
 
 MEI_2013_SOURCE_FILE = MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + DRIVER_FILE
