@@ -185,20 +185,20 @@ def progress():
 def build(filename):
     return send_from_directory(conf.BUILT_SCHEMA_DIR, filename, as_attachment=True)
 
+@csrf.exempt
 @app.route('/google-code/', methods=['POST', ])
 def googlecode():
-    request_body = request.json
+    print('Updating from google code.')
+    request_body = request.data
     google_code_key = conf.GOOGLE_CODE_AUTHKEY
     m = hmac.new(google_code_key)
-    m.update(str(request_body))
+    m.update(request_body)
     digest = m.hexdigest()
 
-    incoming_header = request.headers.get("HTTP_GOOGLE_CODE_PROJECT_HOSTING_HOOK_HMAC")
+    incoming_header = request.headers.get("Google-Code-Project-Hosting-Hook-Hmac")
 
     if digest != incoming_header:
-        print(incoming_header)
-        print(digest)
-
+        print("Digest did not match Message Secret")
         json_resp = jsonify(message="Message Secret was not correct")
         return make_response(json_resp, 400)
 

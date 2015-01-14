@@ -26,19 +26,17 @@ def make_celery(app):
 def perform_svn_update():
     # Update the SVN Repository
     # TODO: Logging needs to be set up for this method.
+    print("Updating svn.")
 
     os.chdir(conf.MEI_SVN_SOURCE_DIR)
     try:
-        output = subprocess.check_output(['svn', 'update'])
+        output = subprocess.check_output(['/usr/bin/svn', 'update'])
     except subprocess.CalledProcessError, e:
         # if, for some reason, the SVN didn't complete, attempt
         # to recover and clean it up.
-        output = subprocess.check_output(['svn', 'cleanup'])
-        output = subprocess.check_output(['svn', 'update'])
-    print("Done svn update")
-
-    os.chdir(os.path.join(conf.MEI_SVN_SOURCE_DIR, "trunk"))
-    output = subprocess.check_output(['./build.sh', 'all'])
+        output = subprocess.check_output(['/usr/bin/svn', 'cleanup'])
+        output = subprocess.check_output(['/usr/bin/svn', 'update'])
+    print("Done svn update: {0}".format(output))
 
     # update the SVN info JSON file
     get_binary_info.apply_async()
