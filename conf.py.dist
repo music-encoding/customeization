@@ -15,6 +15,7 @@ PATH_TO_TEI_STYLESHEETS = ""
 PATH_TO_SAXON_JAR = ""
 PATH_TO_TRANG_JAR = ""
 PATH_TO_JING = ""
+PATH_TO_ROMA2 = ""
 
 # Update these to the latest versions, if necessary.
 LATEST_TAG_2013 = "2.1.1"
@@ -23,6 +24,7 @@ LATEST_TAG_2012 = "2.0.0"
 # Do not customize these paths.
 TEI_TO_RELAXNG_BIN = PATH_TO_TEI_STYLESHEETS + "/bin/teitorelaxng"
 TEI_TO_COMPILEDODD_BIN = PATH_TO_TEI_STYLESHEETS + "/bin/teitoodd"
+TEI_TO_DOCUMENTATION_BIN = PATH_TO_ROMA2
 
 MEI_ALL_FILE = "/customizations/mei-all.xml"
 MEI_NEUMES_FILE = "/customizations/mei-Neumes.xml"
