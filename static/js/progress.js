@@ -40,6 +40,12 @@
             {
                 var download = $("<div class=\"well\"><h4 style=\"text-align:center\"><a href=\"" + data.download + "\">Download Result</a></h4></div>")
                 settings.parentSelector.append(download);
+
+                var console = $("<pre>" + data.message + "</pre>"),
+                    consoleTitle = $("<h4>Command Output</h4>");
+
+                settings.parentSelector.append(consoleTitle);
+                settings.parentSelector.append(console);
             });
         };
 
@@ -56,6 +62,13 @@
                     "(status: " + status + ")";
                 var errorMsg = $("<div class=\"alert alert-danger\" role=\"alert\"><strong>Error</strong> " + errorstr + "</div>");
                 settings.parentSelector.append(errorMsg);
+
+                var console = $("<pre>" + data.message + "</pre>"),
+                    consoleTitle = $("<h4>Console</h4>");
+
+                settings.parentSelector.append(consoleTitle);
+                settings.parentSelector.append(console);
+
             });
         };
 

@@ -1,6 +1,6 @@
 import conf
 from flask_wtf import Form
-from wtforms import RadioField, FileField, SelectField
+from wtforms import RadioField, FileField, SelectField, BooleanField
 from wtforms.validators import InputRequired
 
 
@@ -29,3 +29,5 @@ class ProcessForm(Form):
                                         validators=[InputRequired()])
 
     local_customization_file = FileField(u"Customization File")
+
+    verbose_output = BooleanField(u'Verbose output')

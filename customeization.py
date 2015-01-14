@@ -21,7 +21,7 @@ from forms import ProcessForm
 from task import make_celery
 from task import perform_svn_update
 from task import package_files
-from task import parse_svn_info
+from task import get_binary_info
 
 app = Flask(__name__)
 app.secret_key = conf.SECRET_KEY
@@ -46,8 +46,8 @@ celery = make_celery(app)
 csrf = CsrfProtect()
 csrf.init_app(app)
 
-# Check to make sure the app is reporting the latest SVN version
-parse_svn_info.apply_async()
+# Check to make sure the app is reporting the latest versions of everything
+get_binary_info.apply_async()
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -64,6 +64,7 @@ def index():
         canonicalized_source = request.files.get('source_canonical_file', None)
         customization_option = request.form.get('customization_options', None)
         local_customization = request.files.get('local_customization_file', None)
+        verbose_output = request.form.get('verbose_output', None)
 
         uploaded_customization = None
         # at this point the form will have been checked to make sure the local customization
@@ -82,22 +83,31 @@ def index():
             uploaded_source = os.path.join(tmpdir, filename)
             canonicalized_source.save(uploaded_source)
 
+        verbose = False
+        if verbose_output == "y":
+            verbose = True
+
         res = package_files.apply_async(args=[schema_language, source_option, customization_option],
                                         kwargs={"uploaded_customization": uploaded_customization,
-                                                "uploaded_source": uploaded_source})
+                                                "uploaded_source": uploaded_source,
+                                                "verbose": verbose})
 
         return redirect(url_for('process_and_download') + "?cid=" + str(res))
 
     latest_svn_revision = None
     latest_svn_timestamp = None
-    with open(os.path.join(app.root_path, 'svninfo.json'), 'r') as svninfo:
-        js = json.load(svninfo)
+    with open(os.path.join(app.root_path, 'info.json'), 'r') as info:
+        js = json.load(info)
         latest_svn_revision = js.get('mei_latest_svn_revision', None)
         latest_svn_timestamp = js.get('mei_latest_svn_timestamp', None)
+        tei_stylesheets_version = js.get('tei_stylesheets_version', None)
+        tei_roma_version = js.get('tei_roma_version', None)
 
     d = {
         'latest_revision': latest_svn_revision,
-        'latest_revision_timestamp': latest_svn_timestamp
+        'latest_revision_timestamp': latest_svn_timestamp,
+        'tei_stylesheets_version': tei_stylesheets_version,
+        'tei_roma_version': tei_roma_version
     }
 
     return render_template("index.html", form=form, **d)
@@ -150,7 +160,7 @@ def progress():
             'status': task.status,
             'percentage': 100,
             'download': "/" + result,
-            'message': None
+            'message': task.result['message']
         }
         return jsonify(d)
 
@@ -175,7 +185,7 @@ def progress():
 def build(filename):
     return send_from_directory(conf.BUILT_SCHEMA_DIR, filename, as_attachment=True)
 
-@app.route('/google-code/', methods=['POST',])
+@app.route('/google-code/', methods=['POST', ])
 def googlecode():
     request_body = request.json
     google_code_key = conf.GOOGLE_CODE_AUTHKEY

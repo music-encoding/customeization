@@ -9,64 +9,88 @@
             Please correct the errors below and try again.
         </div>
     {% endif %}
-    <section>
-        <h2>Output</h2>
-        {{ form.schema_language }}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">1. Choose your output format</h3>
+        </div>
+        <div class="panel-body">
+            {{ form.schema_language }}
 
-        {% if form.schema_language.errors %}
-        <div class="alert alert-danger">
-            {% for error in form.schema_language.errors %}
-                <strong>{{ form.schema_language.label.text }}:</strong> {{ error }}
-            {% endfor %}
-        </div>
-        {% endif %}
-    </section>
-    <section>
-        <h2>MEI Source File</h2>
-        <div class="form-group">
-            {{ form.source_options }}
-        </div>
-        <div class="form-group" id="local-source-select">
-            <label for="{{ form.source_canonical_file.label.field_id }}">{{ form.source_canonical_file.label.text }}</label>
-            {{ form.source_canonical_file }}
-        </div>
-        {% if form.source_canonical_file.errors %}
-            <div class="alert alert-danger">If you chose the local driver option, you must provide the file.</div>
-        {% endif %}
-
-        {% if form.source_options.errors %}
+            {% if form.schema_language.errors %}
             <div class="alert alert-danger">
-                {% for error in form.source_options.errors %}
-                    <strong>{{ form.source_options.label.text }}:</strong> {{ error }}
+                {% for error in form.schema_language.errors %}
+                    <strong>{{ form.schema_language.label.text }}:</strong> {{ error }}
                 {% endfor %}
             </div>
-        {% endif %}
-    </section>
-    <section>
-        <h2>MEI Customization</h2>
-        <div class="form-group">
-            <p>Select a customization from the dropdown list:</p>
-            {{ form.customization_options }}
+            {% endif %}
         </div>
-        <div class="form-group" id="local-customization-select">
-            <label for="{{ form.local_customization_file.label.field_id }}">{{ form.local_customization_file.label.text }}</label>
-            {{ form.local_customization_file }}
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">2. Choose your MEI Source File</h3>
         </div>
-
-        {% if form.local_customization_file.errors %}
-            <div class="alert alert-danger">
-                If you chose the local customization option you must provide the file.
+        <div class="panel-body">
+            <div class="form-group">
+                {{ form.source_options }}
             </div>
-        {% endif %}
+            <div class="form-group" id="local-source-select">
+                <label for="{{ form.source_canonical_file.label.field_id }}">{{ form.source_canonical_file.label.text }}</label>
+                {{ form.source_canonical_file }}
+            </div>
+            {% if form.source_canonical_file.errors %}
+                <div class="alert alert-danger">If you chose the local driver option, you must provide the file.</div>
+            {% endif %}
 
-        {% if form.customization_options.errors %}
-        <div class="alert alert-danger">
-            {% for error in form.customization_options.errors %}
-                <strong>{{ form.customization_options.label.text }}:</strong> {{ error }}
-            {% endfor %}
+            {% if form.source_options.errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.source_options.errors %}
+                        <strong>{{ form.source_options.label.text }}:</strong> {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
-        {% endif %}
-    </section>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 class="panel-title">3. Choose your MEI Customization file</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <p>Select a customization from the dropdown list:</p>
+                {{ form.customization_options }}
+            </div>
+            <div class="form-group" id="local-customization-select">
+                <label for="{{ form.local_customization_file.label.field_id }}">{{ form.local_customization_file.label.text }}</label>
+                {{ form.local_customization_file }}
+            </div>
+
+            {% if form.local_customization_file.errors %}
+                <div class="alert alert-danger">
+                    If you chose the local customization option you must provide the file.
+                </div>
+            {% endif %}
+
+            {% if form.customization_options.errors %}
+            <div class="alert alert-danger">
+                {% for error in form.customization_options.errors %}
+                    <strong>{{ form.customization_options.label.text }}:</strong> {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="panel panel-warning" id="advanced-options">
+        <div class="panel-heading">
+            <h3 class="panel-title">Advanced Options</h3>
+        </div>
+        <div class="panel-body">
+            <label>{{ form.verbose_output }}
+                {{ form.verbose_output.label }}</label>
+            <span class="help-block">Show the verbose command output when the customization has been processed. Useful for
+            debugging problems.</span>
+        </div>
+    </div>
+
     <section>
         <button class="btn btn-primary">Process</button>
     </section>

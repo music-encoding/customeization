@@ -13,27 +13,35 @@
 
             {% endblock %}
             <hr />
-            <h3>MEI Source info</h3>
-            <dl>
-                <dt>
-                    Development Version:
-                </dt>
-                <dd>
-                    r{{ latest_revision }} ({{ latest_revision_timestamp }})
-                </dd>
-                <dt>
-                    Latest stable version (2013):
-                </dt>
-                <dd>
-                    {{ config["LATEST_TAG_2013"] }}
-                </dd>
-                <dt>
-                    Latest legacy version (2012):
-                </dt>
-                <dd>
-                    {{ config["LATEST_TAG_2012"] }}
-                </dd>
-            </dl>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Processing info:</h3>
+                </div>
+                <div class="panel-body">
+                    <dl>
+                        <dt>
+                            Development Version:
+                        </dt>
+                        <dd>
+                            r{{ latest_revision }} ({{ latest_revision_timestamp }})
+                        </dd>
+                        <dt>
+                            Latest stable version (2013):
+                        </dt>
+                        <dd>
+                            {{ config["LATEST_TAG_2013"] }}
+                        </dd>
+                        <dt>
+                            Latest legacy version (2012):
+                        </dt>
+                        <dd>
+                            {{ config["LATEST_TAG_2012"] }}
+                        </dd>
+                        <dt>TEI Processing Tools:</dt>
+                        <dd>Stylesheets version: {{ tei_stylesheets_version }}<br />Roma version: {{ tei_roma_version }}</dd>
+                    </dl>
+                </div>
+            </div>
         </div>
         <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>

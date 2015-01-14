@@ -41,7 +41,7 @@ def perform_svn_update():
     output = subprocess.check_output(['./build.sh', 'all'])
 
     # update the SVN info JSON file
-    parse_svn_info.apply_async()
+    get_binary_info.apply_async()
 
     return True
 
@@ -66,7 +66,7 @@ def cleanup_build_directory():
 # Parses the result of `svn info` and updates the svninfo.json
 # file with the result so that it can be displayed on the pages.
 @task(ignore_result=True)
-def parse_svn_info():
+def get_binary_info():
     import json
     os.chdir(conf.MEI_SVN_SOURCE_DIR)
 
@@ -77,6 +77,16 @@ def parse_svn_info():
         output = subprocess.check_output(['svn', 'cleanup'])
         output = subprocess.check_output(['svn', 'info'])
     print("Done svn info lookup")
+
+    tei_version = None
+    with open(os.path.join(conf.PATH_TO_TEI_STYLESHEETS, "VERSION"), 'r') as f:
+        tei_version = f.read()
+        tei_version = tei_version.strip("\n")
+
+    roma_version = None
+    with open(os.path.join(conf.PATH_TO_TEI_ROMA, "VERSION"), 'r') as f:
+        roma_version = f.read()
+        roma_version = roma_version.strip("\n")
 
     if output:
         rev_patt = re.compile(r"Revision: (?P<rev>[0-9]+)")
@@ -97,15 +107,17 @@ def parse_svn_info():
         js = dict()
         js['mei_latest_svn_revision'] = revision
         js['mei_latest_svn_timestamp'] = tstamp
+        js['tei_stylesheets_version'] = tei_version
+        js['tei_roma_version'] = roma_version
 
         dirn = os.path.dirname(os.path.realpath(__file__))
-        with open(os.path.join(dirn, "svninfo.json"), "w") as outfile:
+        with open(os.path.join(dirn, "info.json"), "w") as outfile:
             json.dump(js, outfile)
 
     return True
 
 @task(track_started=True)
-def package_files(output_type, source_file, customization_file, uploaded_source=None, uploaded_customization=None):
+def package_files(output_type, source_file, customization_file, uploaded_source=None, uploaded_customization=None, verbose=False):
     import subprocess
     import tempfile
     import uuid
@@ -124,7 +136,7 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
         transform_bin = conf.TEI_TO_RELAXNG_BIN
         output_ext = ".rng"
     elif output_type == "documentation":
-        transform_bin = conf.PATH_TO_ROMA2
+        transform_bin = conf.TEI_TO_DOCUMENTATION_BIN
         output_ext = ".html"
 
     local_source = None
@@ -162,17 +174,24 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
                "--nodtd",
                "{0}".format(customization),
                tmpdir]
+        if verbose:
+            cmd.insert(1, "--debug")
     else:
         cmd = [transform_bin, "--localsource={0}".format(local_source), "{0}".format(customization), tmp_output_path]
+        if verbose:
+            cmd.insert(1, "--verbose")
 
     output = None
     try:
-        output = subprocess.check_output(cmd)
+        res = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = res.communicate()
+        output = "Command: {0}\nOutput: {1}\n{2}".format(cmd, out, err)
         print(output)
     except subprocess.CalledProcessError, e:
         print("Processing {0} failed. ".format(tmp_output_path))
         print("Command: {0}".format(cmd))
-        return False
+        out = "Processing {0} failed. The command was {1}.".format(tmp_output_path, cmd)
+        return {'file': None, 'message': out}
 
     # downloads will be stored in a UUID directory name to avoid filename clashes.
     tmp_download_dir = str(uuid.uuid4())
@@ -195,4 +214,4 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
 
     full_path = os.path.join(full_download_path, output_filename)
 
-    return {'file': full_path}
+    return {'file': full_path, 'message': output}
