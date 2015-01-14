@@ -120,9 +120,12 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
     if output_type == "compiledodd":
         transform_bin = conf.TEI_TO_COMPILEDODD_BIN
         output_ext = ".xml"
-    else:  # relaxng
+    elif output_type == "relaxng":
         transform_bin = conf.TEI_TO_RELAXNG_BIN
         output_ext = ".rng"
+    elif output_type == "documentation":
+        transform_bin = conf.PATH_TO_ROMA2
+        output_ext = ".html"
 
     local_source = None
     if source_file == 'schema-2013':
@@ -138,14 +141,29 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
     if uploaded_customization and customization_file == "z-local-customization":
         customization = uploaded_customization
     else:
-        ## This is the path to the customization file in the source checkout
+        # This is the path to the customization file in the source checkout
         customization = conf.AVAILABLE_CUSTOMIZATIONS[customization_file][1]
 
     # this will name the output file after the customization file, but with the a new extension.
-    output_filename = "{0}{1}".format(os.path.splitext(os.path.basename(customization))[0], output_ext)
+    # Roma will make a file in the named output directory, whereas the stylesheets will just output
+    # a single file.
+    if output_type == "documentation":
+        output_filename = "mei.doc.html"
+    else:
+        output_filename = "{0}{1}".format(os.path.splitext(os.path.basename(customization))[0], output_ext)
 
     tmp_output_path = os.path.join(tmpdir, output_filename)
-    cmd = [transform_bin, "--localsource={0}".format(local_source), "{0}".format(customization), tmp_output_path]
+    if output_type == "documentation":
+        cmd = [transform_bin, "--localsource={0}".format(local_source),
+               "--xsl={0}".format(conf.PATH_TO_TEI_STYLESHEETS),
+               "--dochtml",
+               "--norelax",
+               "--noxsd",
+               "--nodtd",
+               "{0}".format(customization),
+               tmpdir]
+    else:
+        cmd = [transform_bin, "--localsource={0}".format(local_source), "{0}".format(customization), tmp_output_path]
 
     output = None
     try:

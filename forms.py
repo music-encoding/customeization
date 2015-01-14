@@ -14,7 +14,8 @@ class ProcessForm(Form):
 
     schema_language = SelectField(u'Schema Language',
                                  choices=[('relaxng', 'RelaxNG'),
-                                          ('compiledodd', 'Compiled ODD')],
+                                          ('compiledodd', 'Compiled ODD'),
+                                          ('documentation', 'Documentation')],
                                  validators=[InputRequired()])
 
     source_options = SelectField(u'MEI Source',
