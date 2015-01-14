@@ -196,6 +196,9 @@ def googlecode():
     incoming_header = request.headers.get("HTTP_GOOGLE_CODE_PROJECT_HOSTING_HOOK_HMAC")
 
     if digest != incoming_header:
+        print(incoming_header)
+        print(digest)
+
         json_resp = jsonify(message="Message Secret was not correct")
         return make_response(json_resp, 400)
 
