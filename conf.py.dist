@@ -10,6 +10,7 @@ SECRET_KEY = ""
 
 # Absolute path to the TEIC Stylesheets code
 PATH_TO_TEI_STYLESHEETS = ""
+PATH_TO_TEI_ROMA = ""
 
 # Optional
 PATH_TO_SAXON_JAR = ""
@@ -24,7 +25,7 @@ LATEST_TAG_2012 = "2.0.0"
 # Do not customize these paths.
 TEI_TO_RELAXNG_BIN = PATH_TO_TEI_STYLESHEETS + "/bin/teitorelaxng"
 TEI_TO_COMPILEDODD_BIN = PATH_TO_TEI_STYLESHEETS + "/bin/teitoodd"
-TEI_TO_DOCUMENTATION_BIN = PATH_TO_ROMA2
+TEI_TO_DOCUMENTATION_BIN = PATH_TO_TEI_ROMA + "/roma2.sh"
 
 MEI_ALL_FILE = "/customizations/mei-all.xml"
 MEI_NEUMES_FILE = "/customizations/mei-Neumes.xml"
