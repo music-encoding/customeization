@@ -158,25 +158,33 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
     # Roma will make a file in the named output directory, whereas the stylesheets will just output
     # a single file.
     if output_type == "documentation":
-        # The canonicalized driver file replaces the customization for the documentation
-        customization = os.path.join(tmpdir, 'canonicalized.xml')
-        print(' '.join([conf.PATH_TO_XMLLINT, '--c14n11', '--noout', '-o', customization, local_source]))
-        res = subprocess.Popen([conf.PATH_TO_XMLLINT, '--c14n11', local_source, '-o', customization], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = res.communicate()
-
-    output_filename = "{0}{1}".format(os.path.splitext(os.path.basename(customization))[0], output_ext)
+        output_filename = "mei.doc.html"
+    else:
+        output_filename = "{0}{1}".format(os.path.splitext(os.path.basename(customization))[0], output_ext)
 
     tmp_output_path = os.path.join(tmpdir, output_filename)
-    cmd = [transform_bin, "--localsource={0}".format(local_source), "{0}".format(customization), tmp_output_path]
-    print(cmd)
-    if verbose:
-        cmd.insert(1, "--verbose")
+    if output_type == "documentation":
+        cmd = [transform_bin, "--localsource={0}".format(local_source),
+               "--xsl={0}".format(conf.PATH_TO_TEI_STYLESHEETS),
+               "--dochtml",
+               "--norelax",
+               "--noxsd",
+               "--nodtd",
+               "{0}".format(customization),
+               tmpdir]
+        if verbose:
+            cmd.insert(1, "--debug")
+    else:
+        cmd = [transform_bin, "--localsource={0}".format(local_source), "{0}".format(customization), tmp_output_path]
+        if verbose:
+            cmd.insert(1, "--verbose")
 
     output = None
     try:
         res = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = res.communicate()
         output = "Command: {0}\nOutput: {1}\n{2}".format(cmd, out, err)
+        print(output)
     except subprocess.CalledProcessError, e:
         print("Processing {0} failed. ".format(tmp_output_path))
         print("Command: {0}".format(cmd))
