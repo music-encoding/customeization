@@ -10,7 +10,7 @@ src/*
 
 /src
 
-mei_env/*
+custom_env/*
 
 .idea/*
 

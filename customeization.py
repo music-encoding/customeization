@@ -122,7 +122,7 @@ def process_and_download():
 
     latest_svn_revision = None
     latest_svn_timestamp = None
-    with open(os.path.join(app.root_path, 'svninfo.json'), 'r') as svninfo:
+    with open(os.path.join(app.root_path, 'info.json'), 'r') as svninfo:
         js = json.load(svninfo)
         latest_svn_revision = js.get('mei_latest_svn_revision', None)
         latest_svn_timestamp = js.get('mei_latest_svn_timestamp', None)
