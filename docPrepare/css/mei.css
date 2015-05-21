@@ -1,0 +1,273 @@
+@import url("tei.css");
+
+@page:first {
+	margin: 3cm 1.2cm 3cm;
+	border 0;
+	padding: 0;
+	size: US-Letter;
+	
+	@bottom-right {
+		border-top: none !important;
+		content: '' !important;
+	}
+	
+	@top-right {
+		border-bottom: none !important;
+		content: '' !important;
+	}
+}
+
+@page begin {
+	margin: 3cm 1.2cm 3cm;
+	border 0;
+	padding: 0;
+	size: US-Letter;
+}
+
+@page begin:left {
+	@bottom-left {
+		margin: 1cm 0.3cm 1cm;
+		padding-top: 0;
+		border-top: 0.5pt solid #000000;
+		font-family: 'Frutiger LT Std', 'Gill sans';
+		font-size: 10pt;
+		content: counter(page, lower-roman) !important;
+	}
+}
+
+@page begin:right {
+	@bottom-right {
+		margin: 1cm 0.3cm 1cm;
+		padding-top: 0;
+		border-top: 0.5pt solid #000000;
+		font-family: 'Frutiger LT Std', 'Gill sans';
+		font-size: 10pt;
+		content: counter(page, lower-roman) !important;
+	}
+}
+
+@page:left {
+	margin: 3cm 1.2cm 3cm;
+	border: 0;
+	padding: 0;
+	size: US-Letter;
+	
+	@bottom-left {
+		margin: 1cm 0.3cm 1cm;
+		padding-top: 0;
+		border-top: 0.5pt solid #000000;
+		font-family: 'Frutiger LT Std', 'Gill sans';
+		font-size: 10pt;
+		content: counter(page);
+	}
+	
+	@top-left {
+		content: 'MEI2013 Guidelines';
+		border-bottom: 0.5pt solid #000000;
+		font-family: 'Frutiger LT Std', 'Gill sans';
+		font-size: 10pt;
+		margin: 1cm 0.4cm 1.6cm;
+		padding: 0;
+    }
+}
+
+@page:right {
+	margin: 3cm 1.2cm 3cm;
+	border: 0;
+	padding: 0;
+	size: US-Letter;
+	
+	@bottom-right {
+		margin: 1cm 0.3cm 1cm;
+		padding-top: 0;
+		border-top: 0.5pt solid #000000;
+		font-family: 'Frutiger LT Std', 'Gill sans';
+		font-size: 10pt;
+		content: counter(page);
+	}
+	
+	@top-right {
+		content: string(doctitle);
+		border-bottom: 0.5pt solid #000000;
+		font-family: 'Frutiger LT Std', 'Gill sans';
+		font-size: 10pt;
+		margin: 1cm 0.4cm 1.6cm;
+		padding: 0;
+    }
+}
+
+#agencyTable {
+	margin: 0 auto;
+	border: 0;
+}
+
+#agencyTable td {
+	border: 0;
+}
+
+h1 { 
+	page-break-before: always;
+	margin-top: 0em;
+}
+
+h2 { 
+	/*page-break-before: always;*/
+}
+
+h1 span.head, h1 {
+	string-set: doctitle content();
+}
+
+pre,div.pre,div.pre_eg,pre.eg,div.eg {
+	font-size: 8pt;
+	border-radius: 8px;
+	font-family: 'Andale Mono', Monaco, 'Anonymous Pro', Inconsolata, monospace;
+	margin-bottom: 3.2em;
+	white-space: pre-wrap;
+	background-color: #e5e5e5;
+	border-color: #cccccc;
+	border-width: 0.1pt;
+}
+
+.wovenodd {
+	width: 100%;
+	font-size: 9pt;
+}
+
+.wovenodd-col2 {
+	
+}
+
+.titlePage {
+	font-size: 10pt !important;
+	border: none !important;
+	border-top: none !important;
+	border-bottom: none !important;
+}
+
+.titlePage img {
+	width: 6cm;
+	margin: 0.3cm auto;
+}
+
+.titlePage #agencyTable img {
+	margin-top: 0cm;
+	width: 2cm !important;
+}
+
+.docTitle {
+	font-size: 20pt !important;
+}
+
+.revision {
+	margin-top: -0.6cm;
+}
+
+.docImprint {
+	font-size: 10pt !important;
+}
+
+.toc_back {
+	page-break-after: avoid;
+}
+
+.beginPages {
+	page: begin;
+	counter-reset: page 1;
+}
+
+.beginPages .docImprint {
+	margin-top: 17cm;
+}
+
+.alsoBegin {
+	page: begin;
+}
+
+.regularPage {
+	counter-reset: page 1;
+}
+
+.solidus {
+	font-family: STIXGeneral, STIXGeneral-Regular !important;
+}
+
+.pre .element {
+	color: #333333 !important;
+}
+
+.pre .rnc_keyword {
+    color: #666666;
+}
+
+.pre .rnc-nc {
+    color: #333333;
+}
+
+.pre .attributevalue {
+	color: #666666 !important;
+}
+
+.pre .comment {
+	color: #828282 !important;
+}
+
+.attributeDef .attributeClasses {
+    margin-left: 0.2cm;
+}
+
+.attributeDef .attribute {
+    font-weight: bold;
+    color: #000000;
+}
+
+.attributeDef .attributeClasses:before {
+    content: '(→ ';
+}
+
+.attributeDef .attributeClasses:after {
+    content: ')';
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-size: 11pt;
+	font-family: 'Frutiger LT Std', 'Gill sans', STIXGeneral, 'Myriad Pro', 'Myriad pro', 'Comic Sans', 'Times New Roman', serif;
+}
+
+ul {
+	margin-bottom: 0.5cm;
+}
+
+li {
+	margin: 0.15cm 0cm;
+}
+
+table.attDef td.odd_label {
+	width: 15% !important;
+}
+
+.wovenodd-col1 span.label {
+	display: block;
+}
+
+img {
+	max-width: 18.5cm !important;
+	height: auto;
+	margin-bottom: 0.5cm;
+}
+
+
+div.specChild {
+	margin-left: 0 !important;
+	text-indent: 0 !important;
+}
+
+/*
+	- funding agencies need to be centered and without border
+	- Either a or d…
+	- ToC contains link to ToC
+	- ToC should link to Tag Library
+	- take out links at the bottom
+*/
