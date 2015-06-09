@@ -22,6 +22,22 @@ def make_celery(app):
 
     return celery
 
+
+@task(ignore_result=True)
+def perform_git_update():
+    print("Updating from GitHub")
+    os.chdir(conf.MEI_GIT_SOURCE_DIR)
+    try:
+        output = subprocess.check_output(['/usr/local/bin/git', 'pull'])
+    except subprocess.CalledProcessError:
+        print("An error occurred when updating with git")
+        return False
+    print('Done git update {0}'.format(output))
+
+    get_binary_info.apply_async()
+    return True
+
+
 @task(ignore_result=True)
 def perform_svn_update():
     # Update the SVN Repository
@@ -31,7 +47,7 @@ def perform_svn_update():
     os.chdir(conf.MEI_SVN_SOURCE_DIR)
     try:
         output = subprocess.check_output(['/usr/bin/svn', 'update'])
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError:
         # if, for some reason, the SVN didn't complete, attempt
         # to recover and clean it up.
         output = subprocess.check_output(['/usr/bin/svn', 'cleanup'])
@@ -42,6 +58,7 @@ def perform_svn_update():
     get_binary_info.apply_async()
 
     return True
+
 
 # Cleans up the `build` directory after a set period of time. This
 # is registered as an automatic celery task (not called explicitly).
@@ -61,6 +78,7 @@ def cleanup_build_directory():
             print("Removing: {0}".format(d))
             shutil.rmtree(os.path.join(conf.BUILT_SCHEMA_DIR, d))
 
+
 # Parses the result of `svn info` and updates the svninfo.json
 # file with the result so that it can be displayed on the pages.
 @task(ignore_result=True)
@@ -71,7 +89,7 @@ def get_binary_info():
     output = None
     try:
         output = subprocess.check_output(['svn', 'info'])
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError:
         output = subprocess.check_output(['svn', 'cleanup'])
         output = subprocess.check_output(['svn', 'info'])
     print("Done svn info lookup")
@@ -113,6 +131,7 @@ def get_binary_info():
             json.dump(js, outfile)
 
     return True
+
 
 @task(track_started=True)
 def package_files(output_type, source_file, customization_file, uploaded_source=None, uploaded_customization=None, verbose=False):
@@ -177,7 +196,7 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
         res = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = res.communicate()
         output = "Command: {0}\nOutput: {1}\n{2}".format(cmd, out, err)
-    except subprocess.CalledProcessError, e:
+    except subprocess.CalledProcessError:
         print("Processing {0} failed. ".format(tmp_output_path))
         print("Command: {0}".format(cmd))
         out = "Processing {0} failed. The command was {1}.".format(tmp_output_path, cmd)
