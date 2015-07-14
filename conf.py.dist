@@ -1,61 +1,57 @@
-# Absolute path to a checkout of the MEI SVN Source code
-MEI_SVN_SOURCE_DIR = ""
+import collections
+
+MEI_GIT_SOURCE_DIR = "/path/to/music-encoding"
 
 # Absolute path to a temporary holding spot for built schemas. This will be cleared every
 # day of schemas that are older than 24h.
-BUILT_SCHEMA_DIR = ""
+BUILT_SCHEMA_DIR = "/path/to/customeization/build"
 
 # A secret (random) key for CSRF security. Can be anything.
-SECRET_KEY = ""
+SECRET_KEY = "putsomethinghere"
 
 # Absolute path to the TEIC Stylesheets code
-PATH_TO_TEI_STYLESHEETS = ""
-PATH_TO_TEI_ROMA = ""
+PATH_TO_TEI_STYLESHEETS = "/path/to/Stylesheets"
+PATH_TO_GIT_BINARY = "/usr/bin/git"
 
 # Optional
 PATH_TO_SAXON_JAR = ""
 PATH_TO_TRANG_JAR = ""
 PATH_TO_JING = ""
-PATH_TO_ROMA2 = ""
+PATH_TO_XMLLINT = "/usr/bin/xmllint"
 
-# Update these to the latest versions, if necessary.
-LATEST_TAG_2013 = "2.1.1"
-LATEST_TAG_2012 = "2.0.0"
+RELEASES = (
+    ("Latest Stable", "master"),
+    ("Latest Development", "develop"),
+    ("2013 v2.1.1", "b9dff53ad25203cfe43fa6b68eab6fad6d2a088e"),
+    ("2012 v2.0.0", "1233176080667060f375ed11ce92d4994fd9326c")
+)
 
 # Do not customize these paths.
+MEI_DRIVER_FILE = "source/driver.xml"
+
 TEI_TO_RELAXNG_BIN = PATH_TO_TEI_STYLESHEETS + "/bin/teitorelaxng"
 TEI_TO_COMPILEDODD_BIN = PATH_TO_TEI_STYLESHEETS + "/bin/teitoodd"
-TEI_TO_DOCUMENTATION_BIN = PATH_TO_TEI_ROMA + "/roma2.sh"
+TEI_TO_DOCUMENTATION_BIN = PATH_TO_TEI_STYLESHEETS + "/bin/teitohtml"
 
-MEI_ALL_FILE = "/customizations/mei-all.xml"
-MEI_NEUMES_FILE = "/customizations/mei-Neumes.xml"
-MEI_MENSURAL_FILE = "/customizations/mei-Mensural.xml"
-MEI_CMN_FILE = "/customizations/mei-CMN.xml"
-DRIVER_FILE = "/source/driver.xml"
+MEI_ALL_FILE = "customizations/mei-all.xml"
+MEI_NEUMES_FILE = "customizations/mei-Neumes.xml"
+MEI_MENSURAL_FILE = "customizations/mei-Mensural.xml"
+MEI_CMN_FILE = "customizations/mei-CMN.xml"
 
-MEI_2013_SOURCE_FILE = MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + DRIVER_FILE
-MEI_2012_SOURCE_FILE = MEI_SVN_SOURCE_DIR + "/tags/MEI2012_v" + LATEST_TAG_2012 + DRIVER_FILE
-MEI_DEV_SOURCE_FILE = MEI_SVN_SOURCE_DIR + "/trunk" + DRIVER_FILE
-
-## Customizations
-## The Dictionary key is a unique identifier
-## The tuple is ("Human Readable Name", /path/to/customization/source/file.xml)
-AVAILABLE_CUSTOMIZATIONS = {
-    'mei-all-2013': ("MEI All from MEI 2013", MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + MEI_ALL_FILE),
-    'mei-all-2012': ("MEI All from MEI 2012", MEI_SVN_SOURCE_DIR + "/tags/MEI2012_v" + LATEST_TAG_2012 + MEI_ALL_FILE),
-    'mei-all-develop': ("MEI All from Development Branch", MEI_SVN_SOURCE_DIR + "/trunk" + MEI_ALL_FILE),
-    "mei-neumes-2013": ("MEI Neumes from MEI 2013", MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + MEI_NEUMES_FILE),
-    "mei-neumes-develop": ("MEI Neumes from Development Branch", MEI_SVN_SOURCE_DIR + "/trunk" + MEI_NEUMES_FILE),
-    "mei-mensural-2013": ("MEI Mensural from MEI 2013", MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + MEI_MENSURAL_FILE),
-    "mei-mensural-develop": ("MEI Mensural from Development Branch", MEI_SVN_SOURCE_DIR + "/trunk" + MEI_MENSURAL_FILE),
-    "mei-cmn-2013": ("MEI CMN From MEI 2013", MEI_SVN_SOURCE_DIR + "/tags/MEI2013_v" + LATEST_TAG_2013 + MEI_CMN_FILE),
-    "mei-cmn-develop": ("MEI CMN From Development Branch", MEI_SVN_SOURCE_DIR + "/trunk" + MEI_CMN_FILE),
-    "z-local-customization": ("Local Customization File", None)  # This should always sort last.
-}
-
-# Customize only if you are running the 'official' customization service.
-GOOGLE_CODE_AUTHKEY = ""
-GOOGLE_CODE_PUBLIC_SVN = "http://music-encoding.googlecode.com/svn/"
+# Customizations
+# The Dictionary key is a unique identifier
+# The tuple is ("Human Readable Name", /customization/file.xml)
+AVAILABLE_CUSTOMIZATIONS = (
+    ('mei-all', ("MEI All", MEI_ALL_FILE)),
+    ('mei-neumes', ("MEI Neumes (2013+)", MEI_NEUMES_FILE)),
+    ("mei-mensural", ("MEI Mensural (2013+)", MEI_MENSURAL_FILE)),
+    ("mei-cmn", ("MEI CMN (2013+)", MEI_CMN_FILE)),
+    ("z-local-customization", ("Local Customization File", None))  # This should always sort last.
+)
 
 # Period (in hours) to clean up the build directory
 BUILD_EXPIRY = 24
+
+# pay no attention to the man behind the curtain... This just ensures these options are presented in the right order
+RELEASES = collections.OrderedDict(RELEASES)
+AVAILABLE_CUSTOMIZATIONS = collections.OrderedDict(AVAILABLE_CUSTOMIZATIONS)

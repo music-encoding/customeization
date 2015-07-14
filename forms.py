@@ -1,4 +1,5 @@
 import conf
+import collections
 from flask_wtf import Form
 from wtforms import FileField, SelectField, BooleanField
 from wtforms.validators import InputRequired

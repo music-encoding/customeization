@@ -15,7 +15,7 @@
             <hr />
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Processing info:</h3>
+                    <h3 class="panel-title">MEI Source Information</h3>
                 </div>
                 <div class="panel-body">
                     <dl>
@@ -23,22 +23,15 @@
                             Development Version:
                         </dt>
                         <dd>
-                            r{{ latest_revision }} ({{ latest_revision_timestamp }})
-                        </dd>
-                        <dt>
-                            Latest stable version (2013):
-                        </dt>
-                        <dd>
-                            {{ config["LATEST_TAG_2013"] }}
-                        </dd>
-                        <dt>
-                            Latest legacy version (2012):
-                        </dt>
-                        <dd>
-                            {{ config["LATEST_TAG_2012"] }}
+                            <ul>
+                            {% for rev, info in latest_revisions %}
+                            <li><a href="https://github.com/music-encoding/music-encoding/commit/{{ info[0] }}">{{ rev }}</a> ({{ info[1] }}) </li>
+                            {% endfor %}
+                            </ul>
                         </dd>
                         <dt>TEI Processing Tools:</dt>
-                        <dd>Stylesheets version: {{ tei_stylesheets_version }}<br />Roma version: {{ tei_roma_version }}</dd>
+                        <dd>Stylesheets version: {{ tei_stylesheets_version }}<br />
+                            Roma version: {{ tei_roma_version }}</dd>
                     </dl>
                 </div>
             </div>

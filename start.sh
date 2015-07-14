@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 APPDIR=/srv/webapps/customeization
-VIRTUALENV=mei_env
+VIRTUALENV=app_env
 
 source $APPDIR/$VIRTUALENV/bin/activate
 

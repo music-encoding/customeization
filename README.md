@@ -18,12 +18,10 @@ This web application uses the [Flask](http://flask.pocoo.org) web application se
  
 ***Caveat*** These instructions are written for Linux or Macintosh systems. They will not work for Windows systems.
  
-### Installing the stylesheets and Roma
+### Installing the stylesheets
 
 Check out the latest version of the TEI Stylesheets from https://github.com/TEIC/Stylesheets. You will need to install the `ant`
 Java build tool to get these to run.
-
-You will also need the `roma2.sh` command-line tool from https://github.com/TEIC/Roma.
 
 ### Installing the web application
 
