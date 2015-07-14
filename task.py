@@ -34,7 +34,7 @@ def perform_git_update():
         return False
     print('Done git update {0}'.format(output))
 
-    get_binary_info.apply_async()
+    get_binary_git_info.apply_async()
     return True
 
 
@@ -55,7 +55,7 @@ def perform_svn_update():
     print("Done svn update: {0}".format(output))
 
     # update the SVN info JSON file
-    get_binary_info.apply_async()
+    get_binary_svn_info.apply_async()
 
     return True
 
@@ -79,10 +79,63 @@ def cleanup_build_directory():
             shutil.rmtree(os.path.join(conf.BUILT_SCHEMA_DIR, d))
 
 
+@task(ignore_result=True)
+def get_binary_git_info():
+    import json
+    os.chdir(conf.MEI_GIT_SOURCE_DIR)
+
+    output = None
+    print("Updating from git")
+    try:
+        output = subprocess.check_output(['git', 'show', '--quiet'])
+        output = output.decode()
+    except subprocess.CalledProcessError:
+        print("Could not get the latest Git info")
+        return False
+
+    tei_version = None
+    with open(os.path.join(conf.PATH_TO_TEI_STYLESHEETS, "VERSION"), 'r') as f:
+        tei_version = f.read()
+        tei_version = tei_version.strip("\n")
+
+    roma_version = None
+    with open(os.path.join(conf.PATH_TO_TEI_ROMA, "VERSION"), 'r') as f:
+        roma_version = f.read()
+        roma_version = roma_version.strip("\n")
+
+    if output:
+        commit_patt = re.compile(r"commit (?P<rev>[a-f0-9]{40})")
+        tstamp_patt = re.compile(r"Date:[\s]+(?P<lcdate>.*)")
+        commit = ""
+        tstamp = ""
+
+        commit_match = re.search(commit_patt, output)
+        if commit_match:
+            commit = commit_match.group("rev")
+
+        tstamp_match = re.search(tstamp_patt, output)
+        if tstamp_match:
+            tstamp = tstamp_match.group('lcdate')
+
+            # write a simple json file to the current directory. The Flask
+        # webapp will check this.
+        js = dict()
+        js['mei_latest_git_revision'] = commit
+        js['mei_latest_git_timestamp'] = tstamp
+        js['tei_stylesheets_version'] = tei_version
+        js['tei_roma_version'] = roma_version
+
+        dirn = os.path.dirname(os.path.realpath(__file__))
+        with open(os.path.join(dirn, "info.json"), "w") as outfile:
+            json.dump(js, outfile)
+
+    return True
+
+
 # Parses the result of `svn info` and updates the svninfo.json
 # file with the result so that it can be displayed on the pages.
 @task(ignore_result=True)
-def get_binary_info():
+def get_binary_svn_info():
     import json
     os.chdir(conf.MEI_SVN_SOURCE_DIR)
 

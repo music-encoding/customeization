@@ -21,7 +21,7 @@ from forms import ProcessForm
 from task import make_celery
 from task import perform_svn_update
 from task import package_files
-from task import get_binary_info
+from task import get_binary_git_info
 
 app = Flask(__name__)
 app.secret_key = conf.SECRET_KEY
@@ -38,8 +38,7 @@ app.config['CELERYBEAT_SCHEDULE'] = {
         'schedule': timedelta(hours=24)
     }
 }
-app.config['LATEST_TAG_2013'] = conf.LATEST_TAG_2013
-app.config['LATEST_TAG_2012'] = conf.LATEST_TAG_2012
+
 app.debug = True
 
 celery = make_celery(app)
@@ -47,7 +46,7 @@ csrf = CsrfProtect()
 csrf.init_app(app)
 
 # Check to make sure the app is reporting the latest versions of everything
-get_binary_info.apply_async()
+get_binary_git_info.apply_async()
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -87,30 +86,32 @@ def index():
         if verbose_output == "y":
             verbose = True
 
-        res = package_files.apply_async(args=[schema_language, source_option, customization_option],
-                                        kwargs={"uploaded_customization": uploaded_customization,
-                                                "uploaded_source": uploaded_source,
-                                                "verbose": verbose})
+        res = None
+        # res = package_files.apply_async(args=[schema_language, source_option, customization_option],
+        #                                 kwargs={"uploaded_customization": uploaded_customization,
+        #                                         "uploaded_source": uploaded_source,
+        #                                         "verbose": verbose})
 
         return redirect(url_for('process_and_download') + "?cid=" + str(res))
 
-    latest_svn_revision = None
-    latest_svn_timestamp = None
+    latest_git_revision = None
+    latest_git_timestamp = None
     with open(os.path.join(app.root_path, 'info.json'), 'r') as info:
         js = json.load(info)
-        latest_svn_revision = js.get('mei_latest_svn_revision', None)
-        latest_svn_timestamp = js.get('mei_latest_svn_timestamp', None)
+        latest_git_revision = js.get('mei_latest_git_revision', None)
+        latest_git_timestamp = js.get('mei_latest_git_timestamp', None)
         tei_stylesheets_version = js.get('tei_stylesheets_version', None)
         tei_roma_version = js.get('tei_roma_version', None)
 
     d = {
-        'latest_revision': latest_svn_revision,
-        'latest_revision_timestamp': latest_svn_timestamp,
+        'latest_revision': latest_git_revision,
+        'latest_revision_timestamp': latest_git_timestamp,
         'tei_stylesheets_version': tei_stylesheets_version,
         'tei_roma_version': tei_roma_version
     }
 
     return render_template("index.html", form=form, **d)
+
 
 @app.route('/process/')
 def process_and_download():
@@ -120,20 +121,25 @@ def process_and_download():
     if celery_job_id is None:
         return redirect(url_for('index'))
 
-    latest_svn_revision = None
-    latest_svn_timestamp = None
+    latest_git_revision = None
+    latest_git_timestamp = None
     with open(os.path.join(app.root_path, 'info.json'), 'r') as svninfo:
         js = json.load(svninfo)
-        latest_svn_revision = js.get('mei_latest_svn_revision', None)
-        latest_svn_timestamp = js.get('mei_latest_svn_timestamp', None)
+        latest_git_revision = js.get('mei_latest_git_revision', None)
+        latest_git_timestamp = js.get('mei_latest_git_timestamp', None)
+        tei_stylesheets_version = js.get('tei_stylesheets_version', None)
+        tei_roma_version = js.get('tei_roma_version', None)
 
     d = {
         'celery_job_id': celery_job_id,
-        'latest_revision': latest_svn_revision,
-        'latest_revision_timestamp': latest_svn_timestamp
+        'latest_revision': latest_git_revision,
+        'latest_revision_timestamp': latest_git_timestamp,
+        'tei_stylesheets_version': tei_stylesheets_version,
+        'tei_roma_version': tei_roma_version
     }
 
     return render_template("process.html", **d)
+
 
 @app.route('/progress/')
 def progress():
@@ -143,47 +149,49 @@ def progress():
     if celery_job_id is None:
         return redirect(url_for('index'))
 
-    task = celery.AsyncResult(celery_job_id)
+    # task = celery.AsyncResult(celery_job_id)
 
-    if task.status == 'PROGRESS':
-        d = {
-            'status': task.status,
-            'percentage': 50,
-            'download': None,
-            'message': None
-        }
-        return jsonify(d)
-    elif task.status == 'SUCCESS':
-        result = os.path.relpath(task.result['file'], app.root_path)
+    # if task.status == 'PROGRESS':
+    #     d = {
+    #         'status': task.status,
+    #         'percentage': 50,
+    #         'download': None,
+    #         'message': None
+    #     }
+    #     return jsonify(d)
+    # elif task.status == 'SUCCESS':
+    #     result = os.path.relpath(task.result['file'], app.root_path)
 
-        d = {
-            'status': task.status,
-            'percentage': 100,
-            'download': "/" + result,
-            'message': task.result['message']
-        }
-        return jsonify(d)
+    #     d = {
+    #         'status': task.status,
+    #         'percentage': 100,
+    #         'download': "/" + result,
+    #         'message': task.result['message']
+    #     }
+    #     return jsonify(d)
 
-    elif task.status == 'FAILURE':
-        d = {
-            'status': task.status,
-            'percentage': None,
-            'download': None,
-            'message': "The task execution failed."
-        }
-        return jsonify(d), 500
-    else:
-        d = {
-            'status': task.status,
-            'percentage': None,
-            'download': None,
-            'message': None
-        }
-        return jsonify(d)
+    # elif task.status == 'FAILURE':
+    #     d = {
+    #         'status': task.status,
+    #         'percentage': None,
+    #         'download': None,
+    #         'message': "The task execution failed."
+    #     }
+    #     return jsonify(d), 500
+    # else:
+    #     d = {
+    #         'status': task.status,
+    #         'percentage': None,
+    #         'download': None,
+    #         'message': None
+    #     }
+    #     return jsonify(d)
+
 
 @app.route('/build/<path:filename>', methods=['GET'])
 def build(filename):
     return send_from_directory(conf.BUILT_SCHEMA_DIR, filename, as_attachment=True)
+
 
 @csrf.exempt
 @app.route('/google-code/', methods=['POST', ])
@@ -203,7 +211,7 @@ def googlecode():
         return make_response(json_resp, 400)
 
     # fire this off to Celery to pull in the latest results
-    perform_svn_update.apply_async()
+    # perform_svn_update.apply_async()
 
     json_resp = jsonify(message="Success.")
     return make_response(json_resp, 200)

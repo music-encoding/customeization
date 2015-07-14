@@ -2,7 +2,7 @@
 
 {% block body %}
 <form action="/" method="POST" enctype="multipart/form-data">
-    {{ form.csrf_token }}
+    {{ form.hidden_tag() }}
     {% if form.errors %}
         <div class="alert alert-danger" role="alert">
             <strong>Problems with your submission</strong>
@@ -27,7 +27,7 @@
     </div>
     <div class="panel panel-info">
         <div class="panel-heading">
-            <h3 class="panel-title">2. Choose your MEI Source File</h3>
+            <h3 class="panel-title">2. Choose your MEI Release</h3>
         </div>
         <div class="panel-body">
             <div class="form-group">
