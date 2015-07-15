@@ -52,6 +52,9 @@ AVAILABLE_CUSTOMIZATIONS = (
 # Period (in hours) to clean up the build directory
 BUILD_EXPIRY = 24
 
+# only applicable if you're running a GH hook. This must match the remote secret.
+GITHUB_SECRET_KEY=""
+
 # pay no attention to the man behind the curtain... This just ensures these options are presented in the right order
 RELEASES = collections.OrderedDict(RELEASES)
 AVAILABLE_CUSTOMIZATIONS = collections.OrderedDict(AVAILABLE_CUSTOMIZATIONS)
