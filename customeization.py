@@ -207,5 +207,20 @@ def googlecode():
     json_resp = jsonify(message="Success.")
     return make_response(json_resp, 200)
 
+
+@csrf.exempt
+@app.route('/github/', methods=['POST',])
+def github():
+    print('Updating from GitHub')
+    request_body = request.data
+
+    incoming_hmac = request.headers.get("X-Hub-Signature")
+    incoming_id = request.headers.get("X-Github-Delivery")
+    incoming_event = request.headers.get("X-Github-Event")
+
+    print(incoming_hmac)
+    print(request_body)
+
+
 if __name__ == '__main__':
     app.run()
