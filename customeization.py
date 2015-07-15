@@ -22,6 +22,7 @@ from forms import ProcessForm
 from task import make_celery
 from task import package_files
 from task import get_binary_git_info
+from task import perform_git_update
 
 app = Flask(__name__)
 app.secret_key = conf.SECRET_KEY
@@ -215,6 +216,9 @@ def github():
     if request.method == 'GET':
         return jsonify(message='Github Updating Endpoint.')
 
+    if request.headers.get('X-Github-Event') == 'ping':
+        return make_response(jsonify(message='pong'))
+
     gh_key = conf.GITHUB_SECRET_KEY
     m = hmac.new(gh_key.encode(), msg=request.data, digestmod=sha1)
     digest = m.hexdigest()
@@ -227,20 +231,9 @@ def github():
         json_resp = jsonify(message="Message Secret was not correct")
         return make_response(json_resp, 403)
 
-    # body = json.loads(request.data)
-    # mac = hmac.new(key, msg=request.data, digestmod=sha1)
-    #
-    #
-    # print('Updating from GitHub')
-    # request_body = request.data
-    #
-    # incoming_hmac = request.headers.get("X-Hub-Signature")
-    # incoming_id = request.headers.get("X-Github-Delivery")
-    # incoming_event = request.headers.get("X-Github-Event")
-    #
-    # print(incoming_hmac)
-    # print(request_body)
-    # print(incoming_event)
+    print("Hooray, digest compare succeeded! Hello, GitHub. It's good to see you.")
+
+    perform_git_update.apply_async()
 
     json_resp = jsonify(message="Success.")
 
