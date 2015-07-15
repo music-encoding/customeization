@@ -209,7 +209,7 @@ def googlecode():
 
 
 @csrf.exempt
-@app.route('/github/', methods=['POST',])
+@app.route('/github/', methods=['POST'])
 def github():
     print('Updating from GitHub')
     request_body = request.data
@@ -221,7 +221,7 @@ def github():
     print(incoming_hmac)
     print(request_body)
 
-    json_resp = {}
+    json_resp = jsonify(message="Success.")
 
     return make_response(json_resp, 200)
 
