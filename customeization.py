@@ -223,6 +223,8 @@ def github():
 
     if digest != signature:
         print('Digest did not match Message Secret!')
+        print("Digest: " + digest)
+        print("Signature: " + signature)
         json_resp = jsonify(message="Message Secret was not correct")
         return make_response(json_resp, 403)
 
