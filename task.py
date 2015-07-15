@@ -53,10 +53,11 @@ def perform_git_update():
     print("Updating from GitHub")
     os.chdir(conf.MEI_GIT_SOURCE_DIR)
     try:
-        output = subprocess.check_output([conf.PATH_TO_GIT_BINARY, 'pull'])
+        output = subprocess.check_output([conf.PATH_TO_GIT_BINARY, 'pull', '--all'])
     except subprocess.CalledProcessError:
-        print("An error occurred when updating with git")
+        print("An error occurred when updating from GitHub")
         return False
+
     print('Done git update {0}'.format(output))
 
     get_binary_git_info.apply_async()
