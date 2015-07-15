@@ -220,6 +220,7 @@ def github():
 
     print(incoming_hmac)
     print(request_body)
+    print(incoming_event)
 
     json_resp = jsonify(message="Success.")
 
