@@ -179,7 +179,7 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
 
     # this will name the output file after the customization file, but with the a new extension. whereas the stylesheets will just output
     # a single file.
-    docout = None
+    docout = ""
     if output_type == "documentation":
         # The canonicalized driver file replaces the customization for the documentation
         customization = os.path.join(tmpdir, 'canonicalized.xml')
@@ -187,12 +187,8 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
         docout = res.decode()
 
     output_filename = "{0}{1}".format(os.path.splitext(os.path.basename(customization))[0], output_ext)
-    print(output_filename)
-
     tmp_output_path = os.path.join(tmpdir, output_filename)
-    print(tmp_output_path)
     cmd = [transform_bin, "--localsource={0}".format(local_source), "{0}".format(customization), tmp_output_path]
-    print(cmd)
 
     if verbose:
         cmd.insert(1, "--verbose")
@@ -200,7 +196,7 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
     if docout:
         output = docout + '\n'
     else:
-        output = None
+        output = ""
 
     try:
         res = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
