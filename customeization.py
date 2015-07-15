@@ -216,12 +216,11 @@ def github():
         return jsonify(message='Github Updating Endpoint.')
 
     gh_key = conf.GITHUB_SECRET_KEY
-    m = hmac.new(gh_key.encode())
-    m.update(request.data)
+    m = hmac.new(gh_key.encode(), msg=request.data, digestmod=sha1)
     digest = m.hexdigest()
     signature = request.headers.get('X-Hub-Signature').split('=')[1]
 
-    if digest != signature:
+    if not hmac.compare_digest(digest, signature):
         print('Digest did not match Message Secret!')
         print("Digest: " + digest)
         print("Signature: " + signature)
