@@ -1,5 +1,6 @@
 import os
 import hmac
+from hashlib import sha1
 import json
 from datetime import timedelta
 import tempfile
@@ -209,18 +210,36 @@ def googlecode():
 
 
 @csrf.exempt
-@app.route('/github/', methods=['POST'])
+@app.route('/github/', methods=['GET', 'POST'])
 def github():
-    print('Updating from GitHub')
-    request_body = request.data
+    if request.method == 'GET':
+        return jsonify(message='Github Updating Endpoint.')
 
-    incoming_hmac = request.headers.get("X-Hub-Signature")
-    incoming_id = request.headers.get("X-Github-Delivery")
-    incoming_event = request.headers.get("X-Github-Event")
+    gh_key = conf.GITHUB_SECRET_KEY
+    m = hmac.new(gh_key)
+    m.update(request.data)
+    digest = m.hexdigest()
+    signature = request.headers.get('X-Hub-Signature').split('=')[1]
 
-    print(incoming_hmac)
-    print(request_body)
-    print(incoming_event)
+    if digest != signature:
+        print('Digest did not match Message Secret!')
+        json_resp = jsonify(message="Message Secret was not correct")
+        return make_response(json_resp, 403)
+
+    # body = json.loads(request.data)
+    # mac = hmac.new(key, msg=request.data, digestmod=sha1)
+    #
+    #
+    # print('Updating from GitHub')
+    # request_body = request.data
+    #
+    # incoming_hmac = request.headers.get("X-Hub-Signature")
+    # incoming_id = request.headers.get("X-Github-Delivery")
+    # incoming_event = request.headers.get("X-Github-Event")
+    #
+    # print(incoming_hmac)
+    # print(request_body)
+    # print(incoming_event)
 
     json_resp = jsonify(message="Success.")
 
