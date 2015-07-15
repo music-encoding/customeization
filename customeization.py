@@ -221,6 +221,10 @@ def github():
     print(incoming_hmac)
     print(request_body)
 
+    json_resp = {}
+
+    return make_response(json_resp, 200)
+
 
 if __name__ == '__main__':
     app.run()
