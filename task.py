@@ -196,7 +196,11 @@ def package_files(output_type, source_file, customization_file, uploaded_source=
     if verbose:
         cmd.insert(1, "--verbose")
 
-    output = docout + '\n'
+    if docout:
+        output = docout + '\n'
+    else:
+        output = None
+
     try:
         res = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         out = res.decode()
