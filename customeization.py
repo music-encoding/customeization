@@ -216,7 +216,7 @@ def github():
         return jsonify(message='Github Updating Endpoint.')
 
     gh_key = conf.GITHUB_SECRET_KEY
-    m = hmac.new(gh_key)
+    m = hmac.new(gh_key.encode())
     m.update(request.data)
     digest = m.hexdigest()
     signature = request.headers.get('X-Hub-Signature').split('=')[1]
