@@ -214,9 +214,10 @@ def googlecode():
 @app.route('/github/', methods=['GET', 'POST'])
 def github():
     if request.method == 'GET':
-        return jsonify(message='Github Updating Endpoint.')
+        return make_response(jsonify(message='Github Updating Endpoint.'))
 
     if request.headers.get('X-Github-Event') == 'ping':
+        print('Received a ping.')
         return make_response(jsonify(message='pong'))
 
     gh_key = conf.GITHUB_SECRET_KEY
@@ -236,7 +237,6 @@ def github():
     perform_git_update.apply_async()
 
     json_resp = jsonify(message="Success.")
-
     return make_response(json_resp, 200)
 
 
