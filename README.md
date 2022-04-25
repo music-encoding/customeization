@@ -1,3 +1,6 @@
+# DEPRECATION HINT
+This service was deprecated and the repo has been archived by April 2022. Please refer to the MEI Garage profiler for detailed customization of an MEI schema: https://meigarage.edirom.de/profiler.
+
 # MEI Customization Service
 
 This web application provides a web-based front-end to the [TEI Stylesheets](https://github.com/TEIC/Stylesheets) to create
